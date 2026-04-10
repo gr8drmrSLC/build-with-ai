@@ -1,0 +1,116 @@
+.case-study-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.case-study-loading,
+.case-study-error {
+  font-size: 0.8rem;
+  color: #444;
+  font-style: italic;
+}
+
+.case-study-error {
+  color: #6b2d2d;
+}
+
+.case-study-content {
+  overflow-y: auto;
+}
+
+/* Narrative typography */
+
+.narrative-body {
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.narrative-h1 {
+  color: #ccc;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 1.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.narrative-h1:first-child {
+  margin-top: 0;
+}
+
+.narrative-h2 {
+  color: #aaa;
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.15rem;
+}
+
+.narrative-h3 {
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.1rem;
+}
+
+.narrative-p {
+  color: #888;
+  margin-bottom: 0.1rem;
+}
+
+.narrative-meta {
+  color: #555;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.narrative-bullet {
+  color: #777;
+  padding-left: 0.9rem;
+  position: relative;
+}
+
+.narrative-bullet::before {
+  color: #3a3a3a;
+  content: '—';
+  left: 0;
+  position: absolute;
+}
+
+.narrative-numbered {
+  color: #777;
+  padding-left: 0.25rem;
+}
+
+.narrative-quote {
+  border-left: 2px solid #2a2a2a;
+  color: #999;
+  font-style: italic;
+  margin: 0.5rem 0;
+  padding-left: 0.75rem;
+}
+
+.narrative-code {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 4px;
+  color: #666;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  padding: 0.6rem 0.75rem;
+  white-space: pre;
+}
+
+.narrative-hr {
+  border: none;
+  border-top: 1px solid #1a1a1a;
+  margin: 0.75rem 0;
+}
+
+.narrative-spacer {
+  height: 0.3rem;
+}
