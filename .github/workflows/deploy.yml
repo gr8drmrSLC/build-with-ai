@@ -35,6 +35,8 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: demo
+        env:
+          VITE_WORKER_URL: ${{ secrets.VITE_WORKER_URL }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
