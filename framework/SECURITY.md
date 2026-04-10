@@ -202,3 +202,40 @@ If a security incident occurs:
 6. **Harden**: add the failure mode to this file if it is not already here
 
 Incidents that are not documented are incidents that will recur.
+
+---
+
+## Pre-Deployment Checklist
+
+Run this before any deployment that changes what is publicly accessible.
+The goal is to catch interactions between decisions, not just individual
+decisions — which is where real exposures come from.
+
+1. **Does this deployment make anything public that was not public before?**
+   If no, stop here. If yes, continue.
+
+2. **What secrets are now in scope of the public surface?**
+   List every secret the deployed code touches, reads, or embeds.
+
+3. **Are any secrets baked into build artifacts?**
+   Check: JS bundles (Vite/webpack replace `import.meta.env.*` at build time),
+   config files, Docker images, compiled binaries.
+   If a secret is in an env var used at build time, it is in the artifact.
+
+4. **Is any secret one natural-next-step away from being in scope?**
+   This is the question most often missed. If the obvious next action
+   after this deployment would bring a secret into the public surface,
+   treat it as already exposed and fix the architecture now.
+
+5. **Does the deployment method (CI/CD) have access to secrets?**
+   GitHub Actions secrets injected as env vars during build are embedded
+   in the output bundle for frontend apps. Verify the secret scope matches
+   the deployment scope.
+
+**If any answer is yes and not already mitigated**: stop, fix the
+architecture, then deploy. Not the other way around.
+
+This checklist was added after a session where two individually
+reasonable decisions (direct browser API call + public GitHub Pages
+deployment) combined to create a latent exposure. See PROJECT_NARRATIVE
+Entry 004 for the full account.

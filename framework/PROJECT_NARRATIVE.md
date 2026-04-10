@@ -249,3 +249,89 @@ A PM/strategist who understands how to:
 self-documented artifact in a single Saturday session.
 
 The methodology is not theoretical. This session is the receipt.
+
+---
+
+## Entry 004 — The Combination Failure
+**Date**: 2026-04-12
+**Phase**: Post-build review
+
+### What happened
+
+Two individually reasonable decisions were made in sequence:
+
+1. **Option 1 — direct browser API call** was chosen over a Cloudflare
+   Worker proxy. Reasoning: portfolio demo, deployer controls access,
+   proxy adds infrastructure complexity not justified for this use case.
+   Documented in ADR-005. Comment added to source. Looked thorough.
+
+2. **Public GitHub Pages deployment** was the stated goal from the
+   start. Wired via GitHub Actions. Discussed throughout the session.
+
+Neither decision was wrong in isolation. Together they created a
+latent exposure: had the Anthropic API key been added as a GitHub
+Actions secret (the obvious next step to make the demo work on the
+live URL), it would have been embedded in the public JS bundle —
+readable by anyone with DevTools.
+
+Neither Claude Code nor the orchestrator caught the interaction.
+The ADR documentation made the first decision look considered.
+The deployment infrastructure made the second decision look routine.
+The gap was in the combination.
+
+### The actual current exposure
+
+The key was never in the deployed bundle. The GitHub Actions workflow
+builds `demo/` without injecting secrets — `VITE_ANTHROPIC_API_KEY`
+is undefined at build time, so the panel shows an error on the live
+URL. The exposure was latent: one "add it as a GitHub Actions secret"
+step away from real.
+
+The key was rotated as a precaution. The architecture was redesigned.
+
+### Why the ADR made it worse
+
+ADR-005 documented the tradeoff and included a trigger for revisiting:
+"if this demo becomes publicly accessible with open access, add the
+proxy." That language implies the two decisions are sequential —
+first deploy, then assess. The problem is they were simultaneous.
+The trigger was already met the moment we wired GitHub Actions.
+
+Documentation that looks thorough can create false confidence.
+This is the more dangerous failure mode — not ignorance, but
+documented ignorance that passes review.
+
+### The fix
+
+Redesign OrchestratorPanel to accept a user-supplied API key in
+the UI. The key lives in component state only — never in the bundle,
+never committed, never transmitted except to the API it calls.
+This is strictly better than the original approach:
+- No key in build artifacts
+- No proxy infrastructure needed
+- The visitor uses their own key — nothing is hardcoded on the
+  deployer's side
+- Makes the demo self-serve for anyone who wants to try it
+
+### The protocol fix
+
+Before any deployment step, run this checklist:
+
+1. Does this deployment make anything public that was not public before?
+2. If yes — what secrets are now in scope of the public surface?
+3. Are any secrets baked into build artifacts (JS bundles, config files)?
+4. Is any secret one natural-next-step away from being in scope?
+
+Question 4 is the one this session missed. "One step away" is close
+enough to treat as already exposed.
+
+This checklist is now in `SECURITY.md`.
+
+### What this entry is for
+
+The methodology includes writing down failures, not just decisions.
+A project narrative that only records successes is marketing.
+This one records the gap, the cause, the actual exposure level,
+the fix, and the protocol change it produced.
+
+That is the difference between documentation and accountability.
