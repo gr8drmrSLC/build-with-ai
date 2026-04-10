@@ -181,3 +181,71 @@ and asks is the one you want building things that matter.
 That distinction is not a Claude feature. It is a prompt
 architecture feature. The Wall Protocol is in `CLAUDE.md`.
 The behavior follows from having written it down.
+
+---
+
+## Entry 003 — This Session Is the Proof of Concept
+**Date**: 2026-04-12
+**Phase**: Reflection
+
+### The structure of the build session
+
+This project was built in two stages that perfectly mirror the
+orchestrator/subagent pattern the framework describes:
+
+**Stage 1 — The orchestrator conversation** (claude.ai)
+A long, exploratory, context-rich brainstorming session. Goals were
+unclear at the start. The conversation ranged across positioning,
+repo structure, demo architecture, public framing, file structure,
+and methodology. Context accumulated. Decisions were made. Tradeoffs
+were weighed. By the end, the shape of the project was clear.
+
+**Stage 2 — The executor session** (Claude Code, this session)
+Received `SATURDAY_BRIEF.md` — a single, self-contained handoff
+document produced by the orchestrator conversation. No access to
+the full brainstorming history. No need for it. The brief contained
+exactly what was needed: goals, structure, decisions already made,
+open questions, and the first task.
+
+The executor read the brief, confirmed understanding, and built
+the repo from scratch — incrementally, one confirmed task at a time,
+with the session-end protocol updating the files that the next
+session will read.
+
+### Why the structure matters
+
+The orchestrator conversation is gone. Its context is not recoverable.
+But `SATURDAY_BRIEF.md` survived it — and from that document, a fresh
+context with no prior history built a working demo, eleven framework
+files, a live GitHub repo, and a GitHub Actions deploy pipeline.
+
+That is the external memory principle in practice. The work is not
+in the conversation. The work is in the files.
+
+### Case Study 1
+
+The demo's right panel fetches `PROJECT_NARRATIVE.md` and renders it
+as a case study. Entry 001 of this file documents the construction
+of the project that displays it.
+
+The project's first case study is the project documenting its own
+construction. The demo's proof of concept is the demo itself.
+
+This is not a coincidence arranged after the fact. It is what
+happens when the methodology is followed from the first keystroke.
+The framework produced the artifact. The artifact demonstrates the
+framework. They are the same thing.
+
+### What this session proves
+
+A PM/strategist who understands how to:
+- Run a high-context orchestrator conversation to resolve ambiguity
+- Produce a minimal, precise handoff document from that conversation
+- Delegate execution to a fresh agent context with no state bleed
+- Use external memory (files) instead of conversation memory
+- Apply the Wall Protocol at decision forks, not just blockers
+
+...can take a project from a vague idea to a live, deployed,
+self-documented artifact in a single Saturday session.
+
+The methodology is not theoretical. This session is the receipt.
