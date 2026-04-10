@@ -27,7 +27,7 @@ const RATE_LIMIT_WINDOW_SEC = 3600  // 1 hour
 const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, anthropic-version',
+  'Access-Control-Allow-Headers': 'Content-Type, x-api-key, anthropic-version, anthropic-beta',
   'Access-Control-Max-Age': '86400',
 }
 
