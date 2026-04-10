@@ -495,6 +495,37 @@ understood, and not repeated.
 
 ---
 
+## Session Protocol Going Forward
+**Date**: 2026-04-10
+**Phase**: Session close
+
+This session established the framework but was built as one long
+compacting context — necessary for bootstrap, not the pattern
+going forward.
+
+All future sessions follow this process:
+
+1. Open `PROJECT_STATUS.md` — read the handoff document
+2. Open a fresh Claude Code session
+3. Paste the first atomic task only — nothing else
+4. Confirm output before proceeding
+5. Commit after each completed task
+6. Update `PROJECT_NARRATIVE.md` with any decisions or lessons from that task
+7. Paste next atomic task
+8. Repeat
+
+Session conversations are disposable.
+The committed files are the memory.
+GitHub is the source of truth, not conversation history.
+Close each session once its work is committed.
+
+This is the orchestrator/subagent pattern applied to Claude Code
+sessions themselves — each session is a fresh subagent,
+`PROJECT_STATUS.md` is the handoff document, and the repo is the
+external memory that survives every context boundary.
+
+---
+
 ## First Live Demo Run — PBJ Decomposition
 **Date**: 2026-04-10
 
