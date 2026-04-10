@@ -1,0 +1,169 @@
+.orchestrator-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.orchestrator-description {
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.orchestrator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.orchestrator-input {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  resize: vertical;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.orchestrator-input:focus {
+  border-color: #444;
+  outline: none;
+}
+
+.orchestrator-input::placeholder {
+  color: #3a3a3a;
+}
+
+.orchestrator-input:disabled {
+  opacity: 0.5;
+}
+
+.orchestrator-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #ccc;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 1rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #222;
+  border-color: #555;
+  color: #fff;
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn-stop {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  color: #555;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btn-stop:hover {
+  border-color: #444;
+  color: #888;
+}
+
+.orchestrator-error {
+  color: #c0392b;
+  font-size: 0.8rem;
+}
+
+.orchestrator-output {
+  border-top: 1px solid #1a1a1a;
+  padding-top: 1rem;
+}
+
+/* Output content */
+
+.output-content {
+  font-size: 0.83rem;
+  line-height: 1.6;
+}
+
+.output-h1 {
+  color: #ccc;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.output-h2 {
+  color: #bbb;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.output-section {
+  color: #ddd;
+  margin-bottom: 0.15rem;
+}
+
+.output-bold {
+  color: #ccc;
+  font-weight: 600;
+}
+
+.output-numbered {
+  color: #aaa;
+  padding-left: 0.25rem;
+}
+
+.output-bullet {
+  color: #999;
+  padding-left: 0.75rem;
+  position: relative;
+}
+
+.output-bullet::before {
+  content: '—';
+  color: #444;
+  left: 0;
+  position: absolute;
+}
+
+.output-table-row {
+  color: #666;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+}
+
+.output-line {
+  color: #999;
+}
+
+.output-divider {
+  border: none;
+  border-top: 1px solid #1a1a1a;
+  margin: 0.5rem 0;
+}
+
+.output-spacer {
+  height: 0.4rem;
+}

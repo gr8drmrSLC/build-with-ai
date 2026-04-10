@@ -1,6 +1,7 @@
-# Secrets
+# Secrets — .env.example is excluded from this rule (placeholder template, safe to commit)
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 
