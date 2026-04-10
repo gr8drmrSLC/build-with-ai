@@ -6,7 +6,7 @@
 
 .orchestrator-description {
   font-size: 0.82rem;
-  color: #555;
+  color: #666;
   line-height: 1.5;
 }
 
@@ -17,8 +17,8 @@
 }
 
 .orchestrator-input {
-  background: #161616;
-  border: 1px solid #2a2a2a;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
   border-radius: 6px;
   color: #e0e0e0;
   font-family: inherit;
@@ -31,12 +31,12 @@
 }
 
 .orchestrator-input:focus {
-  border-color: #444;
+  border-color: #5a5a5a;
   outline: none;
 }
 
 .orchestrator-input::placeholder {
-  color: #3a3a3a;
+  color: #555;
 }
 
 .orchestrator-input:disabled {
@@ -49,42 +49,43 @@
 }
 
 .btn-primary {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #2a2a2a;
+  border: 1px solid #4a4a4a;
   border-radius: 4px;
-  color: #ccc;
+  color: #e0e0e0;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.8rem;
-  padding: 0.4rem 1rem;
+  font-weight: 500;
+  padding: 0.45rem 1.1rem;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #222;
-  border-color: #555;
+  background: #363636;
+  border-color: #666;
   color: #fff;
 }
 
 .btn-primary:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 .btn-stop {
   background: transparent;
-  border: 1px solid #2a2a2a;
+  border: 1px solid #333;
   border-radius: 4px;
   color: #555;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.8rem;
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.75rem;
   transition: color 0.15s, border-color 0.15s;
 }
 
 .btn-stop:hover {
-  border-color: #444;
+  border-color: #555;
   color: #888;
 }
 
@@ -94,7 +95,7 @@
 }
 
 .orchestrator-output {
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid #222;
   padding-top: 1rem;
 }
 
@@ -142,13 +143,13 @@
 
 .output-bullet::before {
   content: '—';
-  color: #444;
+  color: #555;
   left: 0;
   position: absolute;
 }
 
 .output-table-row {
-  color: #666;
+  color: #777;
   font-family: 'Courier New', monospace;
   font-size: 0.75rem;
   white-space: pre-wrap;
@@ -160,7 +161,7 @@
 
 .output-divider {
   border: none;
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid #222;
   margin: 0.5rem 0;
 }
 

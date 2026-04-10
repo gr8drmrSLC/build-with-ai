@@ -472,3 +472,28 @@ The human handles judgment.
 
 That division is not a limitation of the current tools. It is the
 correct architecture for this stage of the technology.
+
+---
+
+## First Live Demo Run — PBJ Decomposition
+**Date**: 2026-04-12
+
+First real output from the live demo: "make a pbj."
+
+The framework returned Simple complexity tier, assigned Haiku to
+all three phases, and flagged allergen risk as the only non-trivial
+consideration. Ingredient availability and cut angle standardization
+were noted. First atomic task: place two slices of bread on a
+cutting board.
+
+This was the right output.
+
+A framework that correctly identifies a sandwich as Simple — and
+doesn't invent unnecessary phases, assign expensive models, or
+manufacture architectural concerns — is more credible than one
+that does. Calibration matters more than impressiveness. The
+tendency to over-engineer is the failure mode this framework
+exists to prevent. It would be embarrassing if the demo exhibited
+that failure on its first run.
+
+It didn't.
