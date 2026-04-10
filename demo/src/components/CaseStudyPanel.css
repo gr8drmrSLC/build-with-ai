@@ -117,13 +117,13 @@
 }
 
 .cs-p {
-  color: #777;
+  color: #888;
   font-size: 0.78rem;
   line-height: 1.6;
 }
 
 .cs-bullet {
-  color: #777;
+  color: #888;
   font-size: 0.78rem;
   line-height: 1.6;
   padding-left: 0.9rem;
@@ -138,7 +138,7 @@
 }
 
 .cs-numbered {
-  color: #777;
+  color: #888;
   font-size: 0.78rem;
   line-height: 1.6;
   padding-left: 0.25rem;
