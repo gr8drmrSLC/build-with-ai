@@ -16,3 +16,5 @@ A personal framework for AI-native project development — and a live demo that 
 Most AI project failures are not model failures. They are architecture failures: no cost controls, no regression safety, no delegation policy, no external memory that survives context compaction.
 
 This framework codifies the practices that prevent those failures — built by a PM/strategist through trial and error across real projects, then mapped to their formal names.
+
+The best proof that a methodology works is that the tool demonstrating it was built using it.
