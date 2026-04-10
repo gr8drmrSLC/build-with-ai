@@ -56,7 +56,9 @@ export default function OrchestratorPanel() {
     abortRef.current = new AbortController()
 
     try {
-      // dangerouslyAllowBrowser: intentional for portfolio demo — see DECISIONS.md ADR-005
+      // KNOWN TRADEOFF: API key exposed at build time via env var.
+      // Acceptable for portfolio demo. Production would use a
+      // Cloudflare Worker proxy. See DECISIONS.md ADR-005.
       const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true })
 
       const stream = client.messages.stream({

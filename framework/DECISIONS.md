@@ -16,9 +16,10 @@ Format per entry:
 ## ADR-005 — Claude API called directly from browser (dangerouslyAllowBrowser)
 **Date**: 2026-04-12
 **Decision**: OrchestratorPanel calls the Anthropic API directly from the browser using `dangerouslyAllowBrowser: true`. The API key is injected at build time via `VITE_ANTHROPIC_API_KEY` in `.env.local`.
-**Context**: Browser → API directly exposes the key to anyone who opens DevTools on the deployed page. The production-correct approach is a thin server-side proxy (Cloudflare Worker, Vercel Edge Function) that holds the key and forwards requests.
-**Rejected alternatives**: Cloudflare Worker proxy; Vercel Edge Function proxy.
-**Reason**: This is a personal portfolio demo, not a user-facing product. The deployer controls who accesses it. Adding a proxy introduces infrastructure complexity (a second deployment, secrets in a second service, CORS config) that isn't justified for the current use case. The tradeoff is documented here and flagged in the source code. If this demo ever becomes publicly accessible at scale, add the proxy — the component is already structured to swap the client initialization.
+**Context**: Browser → API directly exposes the key to anyone who opens DevTools on the deployed page. The production-correct approach is a thin server-side proxy (Cloudflare Worker, Vercel Edge Function) that holds the key and forwards requests. At the decision point, two options were surfaced: (1) direct browser call with documented tradeoff, (2) Cloudflare Worker proxy. Option 1 was recommended and confirmed.
+**Rejected alternatives**: Cloudflare Worker proxy; Vercel Edge Function proxy. Both are correct production approaches — rejected here because infrastructure complexity (second deployment, secrets in a second service, CORS config) is not justified for a personal portfolio demo where the deployer controls access.
+**Reason**: This is a portfolio demo, not a user-facing product. The tradeoff is flagged in the source code directly above the API call and documented here. The component is structured so the client initialization is a single swap if a proxy is added later.
+**Trigger for revisiting**: If this demo becomes publicly accessible with open access (e.g., shared on social media with no auth), add the proxy. The key in a build artifact is readable by anyone with DevTools. For a controlled demo (shared directly with interviewers), the risk is acceptable.
 
 ---
 
