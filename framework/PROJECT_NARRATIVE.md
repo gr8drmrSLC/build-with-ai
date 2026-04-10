@@ -475,6 +475,26 @@ correct architecture for this stage of the technology.
 
 ---
 
+## On the Bootstrap Exception
+**Date**: 2026-04-10
+**Phase**: Reflection
+
+This framework was built in a single long Claude Code session rather
+than delegated atomic tasks. That was the correct approach for this
+specific project — the framework itself was the shared context, and
+every decision was interdependent. No clean seams existed to delegate
+along until the structure was established.
+
+The compaction occurred late, after most core work was complete. One
+compaction for a full framework bootstrap is an acceptable outcome.
+
+The atomic task delegation philosophy applies to all projects built
+*using* this framework. It could not be fully applied to the project
+that *defined* it. This is the bootstrap exception — noted,
+understood, and not repeated.
+
+---
+
 ## First Live Demo Run — PBJ Decomposition
 **Date**: 2026-04-10
 

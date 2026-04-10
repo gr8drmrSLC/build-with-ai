@@ -9,7 +9,7 @@ A personal framework for AI-native project development — and a live demo that 
 
 ## Live demo
 
-[Coming soon — hosted on GitHub Pages]
+[https://gr8drmrslc.github.io/build-with-ai/](https://gr8drmrslc.github.io/build-with-ai/)
 
 ## Why this exists
 
