@@ -1,9 +1,7 @@
 import { useState, useRef } from 'react'
-import Anthropic from '@anthropic-ai/sdk'
 import './OrchestratorPanel.css'
 
-// Proxy URL — Cloudflare Worker holds the API key server-side.
-// Key never appears in this bundle. See DECISIONS.md ADR-006.
+// Cloudflare Worker proxy URL — key lives server-side. See DECISIONS.md ADR-006.
 const WORKER_URL = import.meta.env.VITE_WORKER_URL ?? ''
 
 const SYSTEM_PROMPT = `You are an AI project architect using the build-with-ai framework.
@@ -48,53 +46,72 @@ export default function OrchestratorPanel() {
     if (!input.trim() || loading) return
 
     if (!WORKER_URL) {
-      setError('VITE_WORKER_URL not configured — set it in .env.local or GitHub Actions.')
+      setError('VITE_WORKER_URL not configured.')
       return
     }
 
     setLoading(true)
     setOutput('')
     setError('')
-
     abortRef.current = new AbortController()
 
     try {
-      // API key lives in the Cloudflare Worker — not in this bundle.
-      // The SDK sends requests to the worker; the worker proxies to Anthropic.
-      // 'proxied' is a placeholder; the worker ignores the x-api-key header
-      // and substitutes its own stored secret.
-      const client = new Anthropic({
-        apiKey: 'proxied',
-        baseURL: WORKER_URL,
-        dangerouslyAllowBrowser: true,
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: abortRef.current.signal,
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1024,
+          stream: true,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: input.trim() }],
+        }),
       })
 
-      const stream = client.messages.stream({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: input.trim() }],
-      })
+      if (!res.ok) {
+        const body = await res.text()
+        if (res.status === 429) {
+          setError('Rate limit reached — 10 requests per hour. Try again later.')
+        } else {
+          setError(`Error ${res.status}: ${body}`)
+        }
+        return
+      }
 
-      for await (const event of stream) {
-        if (abortRef.current?.signal.aborted) break
-        if (
-          event.type === 'content_block_delta' &&
-          event.delta.type === 'text_delta'
-        ) {
-          const delta = event.delta as { type: 'text_delta'; text: string }
-          setOutput(prev => prev + delta.text)
+      // Parse Anthropic SSE stream
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          const data = line.slice(6).trim()
+          if (data === '[DONE]') break
+          try {
+            const evt = JSON.parse(data)
+            if (
+              evt.type === 'content_block_delta' &&
+              evt.delta?.type === 'text_delta'
+            ) {
+              setOutput(prev => prev + evt.delta.text)
+            }
+          } catch {
+            // skip malformed lines
+          }
         }
       }
     } catch (err) {
-      if (!abortRef.current?.signal.aborted) {
-        const msg = err instanceof Error ? err.message : 'Unknown error'
-        // Surface rate limit message cleanly
-        if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
-          setError('Rate limit reached — 10 requests per hour. Try again later.')
-        } else {
-          setError(msg)
-        }
+      if (err instanceof Error && err.name !== 'AbortError') {
+        setError(err.message)
       }
     } finally {
       setLoading(false)
@@ -150,43 +167,21 @@ export default function OrchestratorPanel() {
   )
 }
 
-// Minimal markdown renderer — bold, headers, tables, bullets
 function OutputRenderer({ text }: { text: string }) {
   const lines = text.split('\n')
-
   return (
     <div className="output-content">
       {lines.map((line, i) => {
-        if (line.startsWith('## ')) {
-          return <h3 key={i} className="output-h2">{line.slice(3)}</h3>
-        }
-        if (line.startsWith('# ')) {
-          return <h2 key={i} className="output-h1">{line.slice(2)}</h2>
-        }
-        if (/^\*\*(.+)\*\*:/.test(line)) {
-          return <p key={i} className="output-section" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
-        }
-        if (line.startsWith('**') && line.endsWith('**') && !line.slice(2, -2).includes('**')) {
-          return <p key={i} className="output-bold">{line.slice(2, -2)}</p>
-        }
-        if (/^\d+\.\s/.test(line)) {
-          return <p key={i} className="output-numbered">{line}</p>
-        }
-        if (line.startsWith('- ')) {
-          return <p key={i} className="output-bullet">{line.slice(2)}</p>
-        }
-        if (line.startsWith('|')) {
-          return <p key={i} className="output-table-row">{line}</p>
-        }
-        if (line.trim() === '---') {
-          return <hr key={i} className="output-divider" />
-        }
-        if (line.trim() === '') {
-          return <div key={i} className="output-spacer" />
-        }
-        return (
-          <p key={i} className="output-line" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
-        )
+        if (line.startsWith('## ')) return <h3 key={i} className="output-h2">{line.slice(3)}</h3>
+        if (line.startsWith('# '))  return <h2 key={i} className="output-h1">{line.slice(2)}</h2>
+        if (/^\*\*(.+)\*\*:/.test(line)) return <p key={i} className="output-section" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+        if (line.startsWith('**') && line.endsWith('**') && !line.slice(2,-2).includes('**')) return <p key={i} className="output-bold">{line.slice(2,-2)}</p>
+        if (/^\d+\.\s/.test(line)) return <p key={i} className="output-numbered">{line}</p>
+        if (line.startsWith('- '))  return <p key={i} className="output-bullet">{line.slice(2)}</p>
+        if (line.startsWith('|'))   return <p key={i} className="output-table-row">{line}</p>
+        if (line.trim() === '---')  return <hr key={i} className="output-divider" />
+        if (line.trim() === '')     return <div key={i} className="output-spacer" />
+        return <p key={i} className="output-line" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
       })}
     </div>
   )
