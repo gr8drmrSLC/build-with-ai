@@ -335,3 +335,61 @@ This one records the gap, the cause, the actual exposure level,
 the fix, and the protocol change it produced.
 
 That is the difference between documentation and accountability.
+
+---
+
+## Entry 005 — The Sequence Inversion
+**Date**: 2026-04-12
+**Phase**: Post-build review
+
+Entry 004 describes what went wrong technically. This entry names
+the structural reason it was possible.
+
+In the first build session, we violated the framework we were
+building. A deployment step was executed without running the
+pre-deployment security checklist because the checklist hadn't
+been written yet. The protocol was designed to prevent this class
+of error. We shipped the deployment pipeline before we shipped
+the security gate that should precede it.
+
+Correct sequence: security gates first, deployment pipeline second.
+
+### Why this happened
+
+The build order followed natural momentum: scaffold the repo,
+wire the demo, get it deployed. Security documentation was
+treated as a parallel track — important, but not blocking.
+
+The framework's own sequencing rules say otherwise. `SECURITY.md`
+is infrastructure, not documentation. It belongs in the repo before
+the deployment pipeline that it governs — the same logic as
+`.gitignore` being the first commit. A security gate written after
+the thing it was meant to gate is not a gate. It is a record of
+what should have been prevented.
+
+### Why this is a better portfolio story than a clean build
+
+A framework that describes hypothetical risks is a checklist.
+A framework that catches a real error on the project that built
+it — and documents the catch — is evidence.
+
+The pre-deployment checklist in `SECURITY.md` exists because this
+session needed it and didn't have it. The sequence rule exists
+because this session inverted it. The threat model table exists
+because the gap it describes was real, not theoretical.
+
+Every item in this framework that says "do this before X" was
+written by someone who did X first. That is the most honest
+possible provenance for a methodology.
+
+### The transferable rule
+
+For any project using this framework:
+
+Security gates are written before the infrastructure they govern.
+The `.gitignore` before the first file. `SECURITY.md` before the
+deployment pipeline. The pre-deployment checklist before the first
+deployment step. The budget guard before the first API call.
+
+Sequence is not a stylistic preference. It is the mechanism by
+which the protection is unconditional rather than aspirational.
