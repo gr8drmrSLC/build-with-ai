@@ -6,154 +6,177 @@ const NARRATIVE_URL =
 
 type Status = 'loading' | 'ready' | 'error'
 
+interface Entry {
+  title: string
+  date: string
+  phase: string
+  lines: string[]   // all content lines after the metadata
+}
+
 export default function CaseStudyPanel() {
-  const [content, setContent] = useState('')
+  const [entries, setEntries] = useState<Entry[]>([])
   const [status, setStatus] = useState<Status>('loading')
+  const [expanded, setExpanded] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     let cancelled = false
-
     fetch(NARRATIVE_URL)
-      .then(res => {
-        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-        return res.text()
-      })
+      .then(r => { if (!r.ok) throw new Error(); return r.text() })
       .then(text => {
         if (!cancelled) {
-          setContent(text)
+          setEntries(parseEntries(text))
           setStatus('ready')
         }
       })
-      .catch(() => {
-        if (!cancelled) setStatus('error')
-      })
-
+      .catch(() => { if (!cancelled) setStatus('error') })
     return () => { cancelled = true }
   }, [])
+
+  function toggle(i: number) {
+    setExpanded(prev => {
+      const next = new Set(prev)
+      next.has(i) ? next.delete(i) : next.add(i)
+      return next
+    })
+  }
 
   return (
     <section className="panel case-study-panel" aria-label="Case Studies">
       <p className="panel-label">Case Studies</p>
 
-      {status === 'loading' && (
-        <p className="case-study-loading">Loading narrative...</p>
-      )}
-
-      {status === 'error' && (
-        <p className="case-study-error">
-          Could not fetch PROJECT_NARRATIVE.md — check network or repo visibility.
-        </p>
-      )}
+      {status === 'loading' && <p className="cs-loading">Loading...</p>}
+      {status === 'error'   && <p className="cs-error">Could not load narrative.</p>}
 
       {status === 'ready' && (
-        <div className="case-study-content">
-          <NarrativeRenderer text={content} />
+        <div className="cs-entries">
+          {entries.map((entry, i) => {
+            const isExpanded = expanded.has(i)
+            const preview = entry.lines.filter(l => l.trim() && !l.startsWith('#')).slice(0, 3)
+
+            return (
+              <article key={i} className="cs-entry">
+                <div className="cs-meta">
+                  {entry.phase && <span className="cs-phase">{entry.phase}</span>}
+                  {entry.date  && <span className="cs-date">{entry.date}</span>}
+                </div>
+                <h3 className="cs-title">{entry.title}</h3>
+
+                {!isExpanded && (
+                  <>
+                    <div className="cs-preview">
+                      {preview.map((line, j) => (
+                        <p key={j} className="cs-preview-line">{stripBold(line)}</p>
+                      ))}
+                    </div>
+                    <button className="cs-toggle" onClick={() => toggle(i)}>
+                      Read more →
+                    </button>
+                  </>
+                )}
+
+                {isExpanded && (
+                  <>
+                    <div className="cs-body">
+                      <BodyRenderer lines={entry.lines} />
+                    </div>
+                    <button className="cs-toggle cs-toggle--collapse" onClick={() => toggle(i)}>
+                      Show less ↑
+                    </button>
+                  </>
+                )}
+              </article>
+            )
+          })}
         </div>
       )}
     </section>
   )
 }
 
-// Renders the markdown patterns used in PROJECT_NARRATIVE.md:
-// headers, bold, bullets, numbered lists, code blocks, blockquotes, hr
-function NarrativeRenderer({ text }: { text: string }) {
-  const blocks = parseBlocks(text)
+// --- Markdown entry parser ---
 
-  return (
-    <div className="narrative-body">
-      {blocks.map((block, i) => {
-        switch (block.type) {
-          case 'h1':
-            return <h2 key={i} className="narrative-h1">{block.text}</h2>
-          case 'h2':
-            return <h3 key={i} className="narrative-h2">{block.text}</h3>
-          case 'h3':
-            return <h4 key={i} className="narrative-h3">{block.text}</h4>
-          case 'hr':
-            return <hr key={i} className="narrative-hr" />
-          case 'meta':
-            return <p key={i} className="narrative-meta">{block.text}</p>
-          case 'code':
-            return (
-              <pre key={i} className="narrative-code">
-                <code>{block.text}</code>
-              </pre>
-            )
-          case 'bullet':
-            return <p key={i} className="narrative-bullet">{inline(block.text)}</p>
-          case 'numbered':
-            return <p key={i} className="narrative-numbered">{inline(block.text)}</p>
-          case 'blockquote':
-            return <blockquote key={i} className="narrative-quote">{inline(block.text)}</blockquote>
-          case 'blank':
-            return <div key={i} className="narrative-spacer" />
-          default:
-            return block.text.trim()
-              ? <p key={i} className="narrative-p">{inline(block.text)}</p>
-              : null
-        }
-      })}
-    </div>
-  )
-}
+function parseEntries(text: string): Entry[] {
+  const entries: Entry[] = []
+  const sections = text.split(/\n(?=## )/)
 
-type Block = { type: string; text: string }
+  for (const section of sections) {
+    const lines = section.split('\n')
+    const titleLine = lines.find(l => l.startsWith('## '))
+    if (!titleLine) continue
 
-function parseBlocks(text: string): Block[] {
-  const lines = text.split('\n')
-  const blocks: Block[] = []
-  let inCode = false
-  let codeLines: string[] = []
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-
-    // Code fence open
-    if (!inCode && line.startsWith('```')) {
-      inCode = true
-      codeLines = []
-      continue
-    }
-    // Code fence close
-    if (inCode && line.startsWith('```')) {
-      inCode = false
-      blocks.push({ type: 'code', text: codeLines.join('\n') })
-      continue
-    }
-    if (inCode) {
-      codeLines.push(line)
-      continue
+    const title = titleLine.replace(/^## /, '').trim()
+    // Skip the file header
+    if (title === 'On Human Oversight' || !title) {
+      // Still include it — just no metadata
     }
 
-    if (line.startsWith('# '))  { blocks.push({ type: 'h1', text: line.slice(2) }); continue }
-    if (line.startsWith('## ')) { blocks.push({ type: 'h2', text: line.slice(3) }); continue }
-    if (line.startsWith('### ')){ blocks.push({ type: 'h3', text: line.slice(4) }); continue }
-    if (line.trim() === '---')  { blocks.push({ type: 'hr',   text: '' }); continue }
-    if (line.startsWith('**Date**') || line.startsWith('**Phase**')) {
-      blocks.push({ type: 'meta', text: line.replace(/\*\*(.+?)\*\*/g, '$1') }); continue
-    }
-    if (line.startsWith('- '))  { blocks.push({ type: 'bullet',   text: line.slice(2) }); continue }
-    if (/^\d+\.\s/.test(line))  { blocks.push({ type: 'numbered', text: line }); continue }
-    if (line.startsWith('> '))  { blocks.push({ type: 'blockquote', text: line.slice(2) }); continue }
-    if (line.trim() === '')     { blocks.push({ type: 'blank', text: '' }); continue }
+    let date = ''
+    let phase = ''
+    const bodyStart: number[] = []
 
-    blocks.push({ type: 'p', text: line })
+    for (let i = 1; i < lines.length; i++) {
+      const l = lines[i]
+      if (l.startsWith('**Date**:')) { date = l.replace('**Date**:', '').trim(); continue }
+      if (l.startsWith('**Phase**:')) { phase = l.replace('**Phase**:', '').trim(); continue }
+      bodyStart.push(i)
+    }
+
+    const bodyLines = bodyStart.map(i => lines[i])
+
+    entries.push({ title, date, phase, lines: bodyLines })
   }
 
-  return blocks
+  return entries
 }
 
-// Inline bold rendering — **text** → <strong>
+// --- Body renderer (expanded view) ---
+
+function BodyRenderer({ lines }: { lines: string[] }) {
+  let inCode = false
+  let codeLines: string[] = []
+  const blocks: React.ReactNode[] = []
+
+  const flush = (key: number) => {
+    if (codeLines.length) {
+      blocks.push(<pre key={`code-${key}`} className="cs-code"><code>{codeLines.join('\n')}</code></pre>)
+      codeLines = []
+    }
+  }
+
+  lines.forEach((line, i) => {
+    if (!inCode && line.startsWith('```')) { inCode = true; return }
+    if (inCode && line.startsWith('```')) { inCode = false; flush(i); return }
+    if (inCode) { codeLines.push(line); return }
+
+    if (line.startsWith('### ')) {
+      blocks.push(<p key={i} className="cs-section-label">{line.slice(4)}</p>)
+    } else if (line.startsWith('- ')) {
+      blocks.push(<p key={i} className="cs-bullet">{inline(line.slice(2))}</p>)
+    } else if (/^\d+\.\s/.test(line)) {
+      blocks.push(<p key={i} className="cs-numbered">{inline(line)}</p>)
+    } else if (line.trim() === '---') {
+      blocks.push(<hr key={i} className="cs-hr" />)
+    } else if (line.trim() === '') {
+      blocks.push(<div key={i} className="cs-spacer" />)
+    } else if (line.startsWith('|')) {
+      blocks.push(<p key={i} className="cs-table-row">{line}</p>)
+    } else if (line.trim()) {
+      blocks.push(<p key={i} className="cs-p">{inline(line)}</p>)
+    }
+  })
+
+  return <>{blocks}</>
+}
+
 function inline(text: string): React.ReactNode {
   const parts = text.split(/(\*\*[^*]+\*\*)/)
   if (parts.length === 1) return text
-  return (
-    <>
-      {parts.map((part, i) =>
-        part.startsWith('**') && part.endsWith('**')
-          ? <strong key={i}>{part.slice(2, -2)}</strong>
-          : part
-      )}
-    </>
-  )
+  return <>{parts.map((p, i) => p.startsWith('**') && p.endsWith('**')
+    ? <strong key={i}>{p.slice(2, -2)}</strong>
+    : p
+  )}</>
+}
+
+function stripBold(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '$1')
 }

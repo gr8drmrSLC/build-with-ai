@@ -11,7 +11,7 @@ raw content API. What you read in the app is always this file.
 ---
 
 ## Entry 001 — The Founding Session
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Bootstrap
 
 ### The problem
@@ -127,7 +127,7 @@ construction, and any walls hit during remaining build.*
 ---
 
 ## Entry 002 — The Wall Protocol in the Wild
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Demo build
 
 ### What happened
@@ -185,7 +185,7 @@ The behavior follows from having written it down.
 ---
 
 ## Entry 003 — This Session Is the Proof of Concept
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Reflection
 
 ### The structure of the build session
@@ -253,7 +253,7 @@ The methodology is not theoretical. This session is the receipt.
 ---
 
 ## Entry 004 — The Combination Failure
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Post-build review
 
 ### What happened
@@ -339,7 +339,7 @@ That is the difference between documentation and accountability.
 ---
 
 ## Entry 005 — The Sequence Inversion
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Post-build review
 
 Entry 004 describes what went wrong technically. This entry names
@@ -397,7 +397,7 @@ which the protection is unconditional rather than aspirational.
 ---
 
 ## Entry 006 — Decision Point: Demo API Key Architecture
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 **Phase**: Security remediation
 
 Three approaches were considered in sequence before arriving at
@@ -476,7 +476,7 @@ correct architecture for this stage of the technology.
 ---
 
 ## First Live Demo Run — PBJ Decomposition
-**Date**: 2026-04-12
+**Date**: 2026-04-10
 
 First real output from the live demo: "make a pbj."
 

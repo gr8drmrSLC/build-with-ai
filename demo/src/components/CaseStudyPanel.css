@@ -4,113 +4,172 @@
   gap: 0.75rem;
 }
 
-.case-study-loading,
-.case-study-error {
+.cs-loading,
+.cs-error {
   font-size: 0.8rem;
   color: #444;
   font-style: italic;
 }
 
-.case-study-error {
-  color: #6b2d2d;
+.cs-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
 
-.case-study-content {
-  overflow-y: auto;
+/* Entry card */
+
+.cs-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-/* Narrative typography */
-
-.narrative-body {
-  font-size: 0.82rem;
-  line-height: 1.65;
+.cs-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.narrative-h1 {
-  color: #ccc;
-  font-size: 0.92rem;
+.cs-phase {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #555;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+}
+
+.cs-date {
+  font-size: 0.68rem;
+  color: #444;
+}
+
+.cs-title {
+  color: #bbb;
+  font-size: 0.84rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-top: 1.25rem;
+  line-height: 1.3;
+}
+
+/* Preview (collapsed) */
+
+.cs-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cs-preview-line {
+  color: #666;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Toggle button */
+
+.cs-toggle {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.74rem;
+  margin-top: 0.1rem;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.cs-toggle:hover {
+  color: #999;
+}
+
+.cs-toggle--collapse {
+  color: #444;
+  margin-top: 0.5rem;
+}
+
+/* Body (expanded) */
+
+.cs-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0.25rem;
+}
+
+.cs-section-label {
+  color: #444;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
   margin-bottom: 0.2rem;
 }
 
-.narrative-h1:first-child {
-  margin-top: 0;
-}
-
-.narrative-h2 {
-  color: #aaa;
-  font-size: 0.84rem;
-  font-weight: 600;
-  margin-top: 1rem;
-  margin-bottom: 0.15rem;
-}
-
-.narrative-h3 {
-  color: #888;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-top: 0.75rem;
-  margin-bottom: 0.1rem;
-}
-
-.narrative-p {
-  color: #888;
-  margin-bottom: 0.1rem;
-}
-
-.narrative-meta {
-  color: #555;
-  font-size: 0.75rem;
-  font-style: italic;
-}
-
-.narrative-bullet {
+.cs-p {
   color: #777;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.cs-bullet {
+  color: #777;
+  font-size: 0.78rem;
+  line-height: 1.6;
   padding-left: 0.9rem;
   position: relative;
 }
 
-.narrative-bullet::before {
-  color: #3a3a3a;
+.cs-bullet::before {
   content: '—';
+  color: #3a3a3a;
   left: 0;
   position: absolute;
 }
 
-.narrative-numbered {
+.cs-numbered {
   color: #777;
+  font-size: 0.78rem;
+  line-height: 1.6;
   padding-left: 0.25rem;
 }
 
-.narrative-quote {
-  border-left: 2px solid #2a2a2a;
-  color: #999;
-  font-style: italic;
-  margin: 0.5rem 0;
-  padding-left: 0.75rem;
-}
-
-.narrative-code {
+.cs-code {
   background: #111;
   border: 1px solid #1e1e1e;
   border-radius: 4px;
-  color: #666;
-  font-size: 0.72rem;
+  color: #555;
+  font-size: 0.7rem;
   line-height: 1.5;
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
   overflow-x: auto;
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 0.6rem;
   white-space: pre;
 }
 
-.narrative-hr {
-  border: none;
-  border-top: 1px solid #1a1a1a;
-  margin: 0.75rem 0;
+.cs-table-row {
+  color: #555;
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  white-space: pre-wrap;
 }
 
-.narrative-spacer {
+.cs-hr {
+  border: none;
+  border-top: 1px solid #1e1e1e;
+  margin: 0.5rem 0;
+}
+
+.cs-spacer {
   height: 0.3rem;
 }

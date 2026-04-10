@@ -154,7 +154,7 @@ Every significant API call is logged in TASK_LEDGER.md:
 ```markdown
 | Date       | Task                        | Model   | Input tok | Output tok | Cost est. | Outcome |
 |------------|-----------------------------|---------|-----------|------------|-----------|---------|
-| 2026-04-12 | Orchestrator decomposition  | Sonnet  | 1,200     | 800        | $0.016    | Done    |
+| 2026-04-10 | Orchestrator decomposition  | Sonnet  | 1,200     | 800        | $0.016    | Done    |
 ```
 
 This is not bureaucracy. It is the data that lets you answer
