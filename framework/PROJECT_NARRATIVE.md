@@ -393,3 +393,63 @@ deployment step. The budget guard before the first API call.
 
 Sequence is not a stylistic preference. It is the mechanism by
 which the protection is unconditional rather than aspirational.
+
+---
+
+## Entry 006 — Decision Point: Demo API Key Architecture
+**Date**: 2026-04-12
+**Phase**: Security remediation
+
+Three approaches were considered in sequence before arriving at
+the correct architecture. The progression is worth documenting
+because each rejection teaches something different.
+
+### Approach 1 — Build-time env var (VITE_ANTHROPIC_API_KEY)
+
+Initially accepted with an ADR (ADR-005). A comment was added to
+the source. The tradeoff was documented. It looked considered.
+
+Rejected when we recognized that "portfolio demo" plus "public
+deployment" plus "key in JS bundle" combine into a live exposure.
+Each decision looked reasonable in isolation. The combination did
+not. The ADR documented the tradeoff without resolving it — which
+is the more dangerous failure mode: documented ignorance that
+passes review.
+
+### Approach 2 — User-supplied key field in the UI
+
+Proposed as the fix. A text input in the panel — visitor pastes
+their own Anthropic key, it lives in component state only, never
+in the bundle.
+
+Rejected because it creates friction and looks suspicious to a
+first-time visitor. A portfolio demo that asks for your API key
+before you can see it work is solving the deployer's security
+problem by creating a trust problem for the visitor. Wrong trade.
+
+### Approach 3 — Cloudflare Worker proxy (chosen)
+
+Key stored as a Cloudflare Worker secret — never in the bundle,
+never in the repo, never client-side. Visitor experience is
+seamless. Rate limiting (10 requests/IP/hour) prevents abuse.
+Hard spend cap in Anthropic Console ($20/month) is the final
+backstop. Haiku is the cheapest model — ~$0.001 per run.
+Portfolio demo traffic is effectively free.
+
+This is also the architecture documented in
+`INFRASTRUCTURE_POLICY.md` — the demo runs on its own security
+framework. The proof of concept proves the framework it describes.
+
+### Key lesson
+
+Two individually reasonable decisions combined to create a
+security gap that neither the orchestrator nor the subagent
+caught in real time. The pre-deployment security checklist exists
+to catch exactly this class of error. We built the deployment
+pipeline before we built the security gate.
+
+Correct sequence: security gates first, deployment second.
+
+This is Case Study 1, Entry 1 — the framework catching its own
+violation on its first build day. The methodology is not
+theoretical. This session is the receipt.

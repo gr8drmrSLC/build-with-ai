@@ -13,6 +13,17 @@ Format per entry:
 
 ---
 
+## ADR-006 — Cloudflare Worker proxy for OrchestratorPanel API calls
+**Date**: 2026-04-12
+**Decision**: OrchestratorPanel calls a Cloudflare Worker proxy, not the Anthropic API directly. The API key is stored as a Cloudflare Worker secret — never in the JS bundle, never in the repo.
+**Context**: Three approaches were evaluated after the initial direct-browser approach was found to combine badly with public deployment. See PROJECT_NARRATIVE Entry 006 for the full decision progression. The two rejected approaches were: (1) build-time env var — key ends up in public JS bundle; (2) user-supplied key field — creates friction and looks like credential harvesting.
+**Rejected alternatives**: Build-time VITE_ANTHROPIC_API_KEY (ADR-005, superseded); user-supplied key input in UI.
+**Reason**: Key never leaves the server. Visitor experience is seamless. Cloudflare Worker free tier handles portfolio demo traffic with no cost. Rate limiting (10 req/IP/hour via KV) and a hard Anthropic Console spend cap ($20/month) prevent abuse. This is also the architecture documented in INFRASTRUCTURE_POLICY.md — the demo runs on its own framework.
+**Cost analysis**: Haiku at $0.25/M input + $1.25/M output. Typical decomposition: ~800 input + ~500 output tokens = ~$0.001 per run. 1,000 demo runs/month = $1.00. Hard cap at $20/month provides 20× headroom. Cloudflare Worker free tier: 100K requests/day — not a constraint.
+**Supersedes**: ADR-005 (direct browser call — that decision is now reversed and documented as a failure mode in PROJECT_NARRATIVE Entries 004–006).
+
+---
+
 ## ADR-005 — Claude API called directly from browser (dangerouslyAllowBrowser)
 **Date**: 2026-04-12
 **Decision**: OrchestratorPanel calls the Anthropic API directly from the browser using `dangerouslyAllowBrowser: true`. The API key is injected at build time via `VITE_ANTHROPIC_API_KEY` in `.env.local`.

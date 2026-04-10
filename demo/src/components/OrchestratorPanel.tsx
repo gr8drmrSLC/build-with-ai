@@ -2,6 +2,10 @@ import { useState, useRef } from 'react'
 import Anthropic from '@anthropic-ai/sdk'
 import './OrchestratorPanel.css'
 
+// Proxy URL — Cloudflare Worker holds the API key server-side.
+// Key never appears in this bundle. See DECISIONS.md ADR-006.
+const WORKER_URL = import.meta.env.VITE_WORKER_URL ?? ''
+
 const SYSTEM_PROMPT = `You are an AI project architect using the build-with-ai framework.
 
 When a user describes a project idea, decompose it using this exact structure:
@@ -43,9 +47,8 @@ export default function OrchestratorPanel() {
     e.preventDefault()
     if (!input.trim() || loading) return
 
-    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-    if (!apiKey) {
-      setError('VITE_ANTHROPIC_API_KEY not set in .env.local')
+    if (!WORKER_URL) {
+      setError('VITE_WORKER_URL not configured — set it in .env.local or GitHub Actions.')
       return
     }
 
@@ -56,10 +59,15 @@ export default function OrchestratorPanel() {
     abortRef.current = new AbortController()
 
     try {
-      // KNOWN TRADEOFF: API key exposed at build time via env var.
-      // Acceptable for portfolio demo. Production would use a
-      // Cloudflare Worker proxy. See DECISIONS.md ADR-005.
-      const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true })
+      // API key lives in the Cloudflare Worker — not in this bundle.
+      // The SDK sends requests to the worker; the worker proxies to Anthropic.
+      // 'proxied' is a placeholder; the worker ignores the x-api-key header
+      // and substitutes its own stored secret.
+      const client = new Anthropic({
+        apiKey: 'proxied',
+        baseURL: WORKER_URL,
+        dangerouslyAllowBrowser: true,
+      })
 
       const stream = client.messages.stream({
         model: 'claude-haiku-4-5-20251001',
@@ -80,7 +88,13 @@ export default function OrchestratorPanel() {
       }
     } catch (err) {
       if (!abortRef.current?.signal.aborted) {
-        setError(err instanceof Error ? err.message : 'Unknown error')
+        const msg = err instanceof Error ? err.message : 'Unknown error'
+        // Surface rate limit message cleanly
+        if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
+          setError('Rate limit reached — 10 requests per hour. Try again later.')
+        } else {
+          setError(msg)
+        }
       }
     } finally {
       setLoading(false)
@@ -137,24 +151,23 @@ export default function OrchestratorPanel() {
 }
 
 // Minimal markdown renderer — bold, headers, tables, bullets
-// Avoids a full markdown library dependency for this scope
 function OutputRenderer({ text }: { text: string }) {
   const lines = text.split('\n')
 
   return (
     <div className="output-content">
       {lines.map((line, i) => {
-        if (line.startsWith('**') && line.endsWith('**') && !line.slice(2, -2).includes('**')) {
-          return <p key={i} className="output-bold">{line.slice(2, -2)}</p>
-        }
-        if (/^\*\*(.+)\*\*:/.test(line)) {
-          return <p key={i} className="output-section" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
-        }
         if (line.startsWith('## ')) {
           return <h3 key={i} className="output-h2">{line.slice(3)}</h3>
         }
         if (line.startsWith('# ')) {
           return <h2 key={i} className="output-h1">{line.slice(2)}</h2>
+        }
+        if (/^\*\*(.+)\*\*:/.test(line)) {
+          return <p key={i} className="output-section" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+        }
+        if (line.startsWith('**') && line.endsWith('**') && !line.slice(2, -2).includes('**')) {
+          return <p key={i} className="output-bold">{line.slice(2, -2)}</p>
         }
         if (/^\d+\.\s/.test(line)) {
           return <p key={i} className="output-numbered">{line}</p>
