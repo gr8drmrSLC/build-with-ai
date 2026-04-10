@@ -121,6 +121,63 @@ narrative makes it human.
 
 ---
 
-*Future entries will cover: methodology panel content decisions,
-Claude API orchestrator design, case study selection, and any walls
-hit during build.*
+*Future entries will cover: src/core/ module design, RETROFIT_GUIDE
+construction, and any walls hit during remaining build.*
+
+---
+
+## Entry 002 — The Wall Protocol in the Wild
+**Date**: 2026-04-12
+**Phase**: Demo build
+
+### What happened
+
+During the OrchestratorPanel build, a decision fork appeared: the
+React app needed an API key to call Claude, but browser-side API
+calls expose the key to anyone with DevTools. Two options:
+
+1. Direct browser call — key in build artifact, acceptable for a
+   controlled demo, zero infrastructure overhead
+2. Cloudflare Worker proxy — key server-side, correct production
+   approach, adds a second deployment and CORS configuration
+
+The agent surfaced both options with tradeoffs, made a recommendation
+with explicit justification, and asked for confirmation before
+proceeding. It did not pick one silently. It did not refuse to
+continue without more information. It resolved the fork at the right
+layer — the human decision point.
+
+### Why this belongs in the narrative
+
+This was not a wall. No blocker was hit. But it was the Wall
+Protocol working correctly on a decision fork rather than a
+blocker — which is actually the more common use case.
+
+The Wall Protocol is usually described as "what to do when stuck."
+The better framing: it is what disciplined agents do at any decision
+point with non-obvious consequences. Surface options. Show reasoning.
+Ask for confirmation. Proceed only when the decision is made by the
+right person.
+
+The tradeoff is now documented in three places:
+- A comment directly above the API call in OrchestratorPanel.tsx
+- ADR-005 in DECISIONS.md with a trigger for revisiting
+- This narrative entry
+
+Three places is not redundant. Each one is for a different reader:
+the comment is for whoever opens that file next, the ADR is for
+whoever is making a related architecture decision, and this entry
+is for whoever wants to understand how the project thinks.
+
+### The meta-observation
+
+The fact that the agent paused at this fork — rather than just
+calling `dangerouslyAllowBrowser: true` and moving on — is
+evidence of the thing the framework is trying to demonstrate.
+An agent that proceeds without surfacing tradeoffs is fast but
+untrustworthy. An agent that surfaces tradeoffs, explains them,
+and asks is the one you want building things that matter.
+
+That distinction is not a Claude feature. It is a prompt
+architecture feature. The Wall Protocol is in `CLAUDE.md`.
+The behavior follows from having written it down.

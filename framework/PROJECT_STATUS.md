@@ -7,91 +7,91 @@ Updated by: Claude Sonnet 4.6 (session: CORE FILES)
 
 ## Current State
 
-The repo skeleton is live and self-bootstrapping. A fresh Claude Code
-session pointed at this repo can read this file and DECISIONS.md and
-know exactly where to pick up — no verbal context required.
+The demo is functionally complete. All three panels have real content.
+Framework core files are written. The repo is self-bootstrapping.
 
 **GitHub**: https://github.com/gr8drmrSLC/build-with-ai
-**Live demo**: Not yet deployed (GitHub Pages source must be set to
-"GitHub Actions" in repo Settings → Pages — one manual step pending)
+**Live demo**: Deploy wired — pending one manual step:
+  repo Settings → Pages → Source → GitHub Actions
+  (The push that added MethodologyPanel qualifies as the trigger —
+  set Pages source and the deploy will run immediately.)
 
 ---
 
 ## What Is Built
 
 ### Infrastructure
-- [x] `.gitignore` — committed first, before all other files
+- [x] `.gitignore` — committed first; `!.env.example` negation confirmed working
 - [x] Repo skeleton — `framework/`, `demo/`, `README.md`
-- [x] GitHub repo created and pushed (`gr8drmrSLC/build-with-ai`)
-- [x] GitHub Actions deploy workflow (`.github/workflows/deploy.yml`)
-  - Triggers on push to `main`/`master` when `demo/` changes
-  - Builds `demo/dist`, uploads to GitHub Pages
-  - **Pending**: Pages source must be set to "GitHub Actions" in repo settings
+- [x] GitHub repo live: `gr8drmrSLC/build-with-ai`
+- [x] GitHub Actions deploy workflow — path-filtered to `demo/**`
 
-### Framework files
-- [x] `framework/CLAUDE.md` — session protocol, 8-step safety, Wall Protocol, delegation policy
-- [x] `framework/DECISIONS.md` — ADR-001 through ADR-004
-- [x] `framework/PROJECT_STATUS.md` — this file
+### Framework files (11 of ~18)
+- [x] `CLAUDE.md` — session protocol, 8-step safety, Wall Protocol, delegation
+- [x] `DECISIONS.md` — ADR-001 through ADR-005
+- [x] `PROJECT_STATUS.md` — this file
+- [x] `PROJECT_NARRATIVE.md` — Entry 001 (founding session) + Entry 002 (Wall Protocol)
+- [x] `ARCHITECTURE.md` — component map, data flow, deployment, ADR index
+- [x] `AI_DELEGATION_POLICY.md` — capability matrix, model selection, Wall Protocol detail
+- [x] `SECURITY.md` — threat model, secret handling, secrets scan, incident response
+- [x] `BUDGET_POLICY.md` — cost reference, spend limits, budget_guard pattern, TASK_LEDGER format
+- [x] `GIT_POLICY.md` — non-negotiables, commit message rules, branching, .gitattributes
+- [x] `DEVELOPMENT_PROTOCOL.md` — 8-step protocol with examples, scope creep rule, smoke test
+- [x] `CONVENTIONS.md` — Python + TypeScript style, file organization, .env.example format
 
 ### Demo app (`demo/`)
-- [x] Vite + TypeScript scaffolded
-- [x] Three-panel layout skeleton — MethodologyPanel, OrchestratorPanel, CaseStudyPanel
-- [x] Dark theme, responsive (collapses below 900px)
-- [x] `base: '/build-with-ai/'` set in vite.config.ts for Pages routing
+- [x] Vite + TypeScript, dark theme, responsive three-panel layout
+- [x] `MethodologyPanel` — 6-step walkthrough with principle lines
+- [x] `OrchestratorPanel` — live Claude API streaming (Haiku); KNOWN TRADEOFF comment + ADR-005
+- [x] `CaseStudyPanel` — fetches `PROJECT_NARRATIVE.md` live from GitHub raw API
 - [x] Build verified clean (tsc + vite, 0 errors)
-- [ ] Panel content — all three panels show placeholders
+- [x] `demo/.env.example` — documents `VITE_ANTHROPIC_API_KEY`
 
 ---
 
 ## What Is Not Built Yet
 
-### Framework files (priority order)
-1. `framework/PROJECT_NARRATIVE.md` — the "how we thought" story; includes the
-   self-referential insight: *"The brainstorming session that designed this
-   framework was itself an example of the framework."*
-2. `framework/ARCHITECTURE.md` — system design, component map, ADR index
-3. `framework/CONVENTIONS.md` — code style, naming, file organization rules
-4. `framework/DEVELOPMENT_PROTOCOL.md` — 8-step protocol expanded with examples
-5. `framework/AI_DELEGATION_POLICY.md` — agent capability matrix, Wall Protocol detail
-6. `framework/SECURITY.md` — threat model, secret handling, commit hygiene
-7. `framework/BUDGET_POLICY.md` — spend limits, model selection rules
-8. `framework/RETROFIT_GUIDE.md` — **backlog** — checklist for applying framework
-   to existing projects (job bot, ARIA); see backlog section below
-9. Remaining policy files from the brief (GIT_POLICY, BACKUP_POLICY, etc.)
+### Framework files (remaining)
+- [ ] `BACKUP_POLICY.md`
+- [ ] `INFRASTRUCTURE_POLICY.md`
+- [ ] `ORCHESTRATION_PROTOCOL.md`
+- [ ] `PROJECT_BRIEF_TEMPLATE.md`
+- [ ] `TASK_LEDGER.md`
+- [ ] `USER_MANUAL.md`
+- [ ] `RETROFIT_GUIDE.md` — **backlog** — retrofit checklist for job bot + ARIA
 
 ### `src/core/` Python modules
-- `budget_guard.py`, `agent_dispatcher.py`, `task_schema.py`,
-  `logging_config.py`, `config.py`, `rate_limiter.py`,
-  `aws_config_validator.py`
-- Bootstrap files: `pyproject.toml`, `.pre-commit-config.yaml`,
-  `bootstrap.sh`, `.env.example`
+- [ ] `budget_guard.py`, `agent_dispatcher.py`, `task_schema.py`
+- [ ] `logging_config.py`, `config.py`, `rate_limiter.py`, `aws_config_validator.py`
+- [ ] Bootstrap: `pyproject.toml`, `.pre-commit-config.yaml`, `bootstrap.sh`, `.env.example`
 
-### Demo app — real content
-- MethodologyPanel: 6-step methodology walkthrough
-- OrchestratorPanel: live Claude API call (project idea → decomposition)
-- CaseStudyPanel: fetches `framework/PROJECT_NARRATIVE.md` from GitHub raw API
-- CHANGELOG.md (root level)
+### Repo hygiene
+- [ ] Root `CHANGELOG.md`
+- [ ] `demo/` — remove Vite boilerplate assets (hero.png, react.svg, vite.svg) and `index.css` reset conflicts
 
 ---
 
 ## Open Questions
 
-None blocking. One pending manual action:
-- Enable GitHub Pages: repo Settings → Pages → Source → GitHub Actions
+None blocking.
+
+**Pending manual action**: GitHub Pages source → "GitHub Actions"
 
 ---
 
 ## Next Task
 
-Write `framework/PROJECT_NARRATIVE.md` — the living "how we thought" story.
-First entry covers this founding session: problem identified, framework designed,
-repo bootstrapped. Include the self-referential proof-of-methodology line.
+Write root `CHANGELOG.md` to capture this session's work, then move to
+`src/core/` Python modules — starting with `config.py` and `budget_guard.py`
+as the two that the remaining modules depend on.
+
+Alternatively: pivot to LinkedIn posts and PDF summary (Saturday deliverable 3 + 4)
+now that the demo is demonstrable. User to direct.
 
 ---
 
 ## Backlog
 
-- `framework/RETROFIT_GUIDE.md` — checklist for retrofitting this framework onto
-  existing projects built without it. Real targets: job search bot, ARIA.
-  Covers: gap audit, priority order (security first), one-time secrets scan on
-  commit history, 8-step protocol introduction, `retrofit_checklist.md` template.
+- `RETROFIT_GUIDE.md` — gap audit, priority order, secrets scan on commit history,
+  8-step protocol introduction, `retrofit_checklist.md` template.
+  Real targets: job search bot, ARIA.
