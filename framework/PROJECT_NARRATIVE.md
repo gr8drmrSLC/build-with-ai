@@ -453,3 +453,22 @@ Correct sequence: security gates first, deployment second.
 This is Case Study 1, Entry 1 — the framework catching its own
 violation on its first build day. The methodology is not
 theoretical. This session is the receipt.
+
+---
+
+## On Human Oversight
+
+This build required active human judgment at several points that
+no agent caught independently — the API key exposure being the
+clearest example. The agents reasoned well locally. They missed
+the combination. A human connecting the dots across the full
+context caught it.
+
+The framework is not an automation of software development. It is
+a structure for human-AI collaboration where the human's role is
+explicit: define scope, review decisions, catch cross-cutting
+risks, ask uncomfortable questions. The agents handle execution.
+The human handles judgment.
+
+That division is not a limitation of the current tools. It is the
+correct architecture for this stage of the technology.
