@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #0f0f0f;
+  color: #e8e8e8;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #222;
+  background: #111;
+}
+
+.app-header h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.tagline {
+  flex: 1;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.source-link {
+  font-size: 0.8rem;
+  color: #666;
+  text-decoration: none;
+  border: 1px solid #333;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.source-link:hover {
+  color: #ccc;
+  border-color: #555;
+}
+
+/* Three-panel layout */
+
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel {
+  padding: 1.75rem;
+  border-right: 1px solid #1a1a1a;
+  overflow-y: auto;
+}
+
+.panel:last-child {
+  border-right: none;
+}
+
+.panel-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #444;
+  margin-bottom: 1.5rem;
+}
+
+.panel-placeholder {
+  font-size: 0.85rem;
+  color: #333;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    border-right: none;
+    border-bottom: 1px solid #1a1a1a;
+  }
+}
