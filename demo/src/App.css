@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #111;
+  background: #0d0d0d;
   color: #e8e8e8;
   min-height: 100vh;
 }
@@ -39,12 +39,12 @@ body {
 .tagline {
   flex: 1;
   font-size: 0.85rem;
-  color: #777;
+  color: #888;
 }
 
 .source-link {
   font-size: 0.8rem;
-  color: #777;
+  color: #888;
   text-decoration: none;
   border: 1px solid #3a3a3a;
   padding: 0.3rem 0.7rem;
@@ -68,7 +68,7 @@ body {
 }
 
 .panel {
-  background: #141414;
+  background: #181818;
   padding: 1.75rem;
   border-right: 1px solid #252525;
   overflow-y: auto;
@@ -83,14 +83,8 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #555;
+  color: #666;
   margin-bottom: 1.5rem;
-}
-
-.panel-placeholder {
-  font-size: 0.85rem;
-  color: #444;
-  font-style: italic;
 }
 
 @media (max-width: 900px) {
