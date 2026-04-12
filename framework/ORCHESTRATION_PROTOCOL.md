@@ -197,6 +197,107 @@ across steps.
 
 ---
 
+## Agent Teams Pattern
+
+For tasks that are genuinely parallelizable — research + implementation +
+validation running simultaneously — Claude Code supports spawning multiple
+subagents that work in parallel and report back to the orchestrator.
+
+### When to use a team vs. a sequence
+
+Use a team when:
+- Three or more independent workstreams can run simultaneously
+- Each stream has a clearly bounded file scope with no overlap
+- The combined time saving justifies the coordination overhead
+
+Use sequential subagents (the default) when:
+- Tasks depend on each other's output
+- The codebase is small enough that parallelism adds complexity without speed
+- You are not sure — sequential is always safe, teams are sometimes faster
+
+### Team structure
+
+```
+Orchestrator (you + Claude Code session)
+    ├── Defines the team, assigns scopes, synthesizes results
+    ├── research-agent  — data gathering, reading, web search
+    ├── impl-agent      — code writing, file editing
+    └── qa-agent        — testing, validation, error checking
+```
+
+**Lead model**: Sonnet. Orchestration is a high-token workload (repeated
+reads of project state, routing decisions, synthesis). Sonnet handles
+this well at a fraction of Opus cost. Reserve Opus for a single
+hard architectural decision — not as the session lead.
+
+**Teammate model**: Sonnet for complex reasoning tasks, Haiku for
+atomic/well-scoped tasks. Match the model to the task, not the role.
+
+### File ownership rules
+
+Parallel agents writing to the same file produce non-deterministic
+results. Assign exclusive ownership before spawning:
+
+| Agent            | Owns                        | Cannot touch               |
+|------------------|-----------------------------|----------------------------|
+| research-agent   | `/data/`, `/research/`      | `/src/`, `/tests/`         |
+| impl-agent       | `/src/`, `/services/`       | `/data/`, `/tests/`        |
+| qa-agent         | `/tests/`                   | `/src/`, `/data/`          |
+
+These boundaries are enforced by prompt — include them explicitly in
+each agent's spawn prompt. An agent that is not told what it owns
+will touch whatever seems relevant.
+
+### Spawn prompt template
+
+```
+Create an agent team for [TASK DESCRIPTION].
+
+Spawn three agents with the following scopes:
+
+research-agent:
+  Goal: [specific research objective]
+  Files it may read: [list]
+  Files it may write: /data/, /research/ only
+  Deliverable: [specific output — file path, format, what "done" looks like]
+
+impl-agent:
+  Goal: [specific implementation objective]
+  Files it may read: [list, including research-agent output once ready]
+  Files it may write: /src/, /services/ only
+  Deliverable: [specific output]
+  Dependency: [any output from research-agent it needs before starting]
+
+qa-agent:
+  Goal: [specific validation objective]
+  Files it may read: [list, including impl-agent output once ready]
+  Files it may write: /tests/ only
+  Deliverable: [specific output — test results, pass/fail, issues found]
+  Dependency: impl-agent must complete before qa-agent starts
+
+Synthesize when all agents report idle: [what the synthesis should produce]
+```
+
+### Coordination rules
+
+1. **Dependencies are explicit**: if qa-agent needs impl-agent's output,
+   state the dependency in the spawn prompt. Do not assume agents will
+   coordinate implicitly — they will not.
+
+2. **Each agent closes when done**: a subagent that stays open after
+   completing its task consumes context. Include "report results and close"
+   in every spawn prompt.
+
+3. **The orchestrator synthesizes, not the agents**: agents produce
+   bounded outputs. The orchestrator reads all outputs and synthesizes
+   the final result. Agents that try to synthesize exceed their scope.
+
+4. **Commit after synthesis**: the team's work is not committed until
+   the orchestrator has reviewed all outputs and confirmed they are
+   coherent together. Individual agent outputs are intermediate artifacts.
+
+---
+
 ## The Handoff Document Is the Interface
 
 In software, an interface defines the contract between two components.
