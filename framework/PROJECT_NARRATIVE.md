@@ -2,7 +2,7 @@
 
 This file is the living "how we thought" story of build-with-ai.
 Each entry covers a founding decision, a wall hit, a pivot, or an
-insight that shaped the project. It is not a changelog — it is the
+insight that shaped the project. It is not a changelog, it is the
 reasoning behind the reasoning.
 
 The CaseStudyPanel in the demo fetches this file live from the GitHub
@@ -10,7 +10,7 @@ raw content API. What you read in the app is always this file.
 
 ---
 
-## Entry 001 — The Founding Session
+## Entry 001: The Founding Session
 **Date**: 2026-04-10
 **Phase**: Bootstrap
 
@@ -32,7 +32,7 @@ that were missing were always the ones that caused the incident.
 
 ### The insight
 
-The practices that prevent these failures have formal names — ADRs,
+The practices that prevent these failures have formal names: ADRs,
 FinOps, OWASP, the Well-Architected Framework, TDD. But they live
 in engineering culture, not in PM/strategist culture. A product
 manager who understands what to enforce, and why, and how to
@@ -71,36 +71,36 @@ conversation producing a minimal, precise handoff document for a
 fresh executor context.
 
 This is not a coincidence. It is the point. A methodology that
-cannot be applied to its own creation is not a methodology — it
+cannot be applied to its own creation is not a methodology, it
 is a description of one.
 
 ### What was built in this session
 
 In order, with the reasoning preserved:
 
-1. **`.gitignore` committed first** — before README, before structure,
+1. **`.gitignore` committed first.** Before README, before structure,
    before anything. Secrets in git history require history rewriting.
    Prevention is cheaper than recovery. The sequencing makes it
    unconditional.
 
-2. **Single repo, two subdirectories** — `framework/` and `demo/`
+2. **Single repo, two subdirectories.** `framework/` and `demo/`
    together. The demo fetches real framework files via the GitHub raw
    API. Separate repos would introduce sync drift and split the story
    across two URLs. The repo itself is the artifact.
 
-3. **GitHub Actions over gh-pages package** — path filtering means
+3. **GitHub Actions over gh-pages package.** Path filtering means
    framework file changes don't trigger unnecessary demo rebuilds.
    No extra branch, no extra dependency. Native to the platform.
 
-4. **Vite over CRA or Next.js** — CRA is deprecated. Next.js adds
+4. **Vite over CRA or Next.js.** CRA is deprecated. Next.js adds
    SSR complexity a static demo doesn't need. Vite is fast, current,
    and pairs cleanly with static hosting.
 
-5. **`CLAUDE.md` before content files** — the session protocol is
+5. **`CLAUDE.md` before content files.** The session protocol is
    infrastructure, not documentation. It runs every session. It
    belongs in the repo before the files it governs.
 
-6. **`PROJECT_STATUS.md` as the self-bootstrap mechanism** — a fresh
+6. **`PROJECT_STATUS.md` as the self-bootstrap mechanism.** A fresh
    Claude Code session pointed at this repo reads `CLAUDE.md`,
    `PROJECT_STATUS.md`, and `DECISIONS.md` in order and knows exactly
    where to pick up. No verbal context required. The repo carries
@@ -126,7 +126,7 @@ construction, and any walls hit during remaining build.*
 
 ---
 
-## Entry 002 — The Wall Protocol in the Wild
+## Entry 002: The Wall Protocol in the Wild
 **Date**: 2026-04-10
 **Phase**: Demo build
 
@@ -151,7 +151,7 @@ layer — the human decision point.
 
 This was not a wall. No blocker was hit. But it was the Wall
 Protocol working correctly on a decision fork rather than a
-blocker — which is actually the more common use case.
+blocker, which is actually the more common use case.
 
 The Wall Protocol is usually described as "what to do when stuck."
 The better framing: it is what disciplined agents do at any decision
@@ -159,10 +159,9 @@ point with non-obvious consequences. Surface options. Show reasoning.
 Ask for confirmation. Proceed only when the decision is made by the
 right person.
 
-The tradeoff is now documented in three places:
-- A comment directly above the API call in OrchestratorPanel.tsx
-- ADR-005 in DECISIONS.md with a trigger for revisiting
-- This narrative entry
+The tradeoff is now documented in three places: a comment directly
+above the API call in OrchestratorPanel.tsx, ADR-005 in DECISIONS.md
+with a trigger for revisiting, and this narrative entry.
 
 Three places is not redundant. Each one is for a different reader:
 the comment is for whoever opens that file next, the ADR is for
@@ -184,7 +183,7 @@ The behavior follows from having written it down.
 
 ---
 
-## Entry 003 — This Session Is the Proof of Concept
+## Entry 003: This Session Is the Proof of Concept
 **Date**: 2026-04-10
 **Phase**: Reflection
 
@@ -193,14 +192,14 @@ The behavior follows from having written it down.
 This project was built in two stages that perfectly mirror the
 orchestrator/subagent pattern the framework describes:
 
-**Stage 1 — The orchestrator conversation** (claude.ai)
+**Stage 1: The orchestrator conversation** (claude.ai)
 A long, exploratory, context-rich brainstorming session. Goals were
 unclear at the start. The conversation ranged across positioning,
 repo structure, demo architecture, public framing, file structure,
 and methodology. Context accumulated. Decisions were made. Tradeoffs
 were weighed. By the end, the shape of the project was clear.
 
-**Stage 2 — The executor session** (Claude Code, this session)
+**Stage 2: The executor session** (Claude Code, this session)
 Received `SATURDAY_BRIEF.md` — a single, self-contained handoff
 document produced by the orchestrator conversation. No access to
 the full brainstorming history. No need for it. The brief contained
@@ -238,21 +237,19 @@ framework. They are the same thing.
 
 ### What this session proves
 
-A PM/strategist who understands how to:
-- Run a high-context orchestrator conversation to resolve ambiguity
-- Produce a minimal, precise handoff document from that conversation
-- Delegate execution to a fresh agent context with no state bleed
-- Use external memory (files) instead of conversation memory
-- Apply the Wall Protocol at decision forks, not just blockers
-
-...can take a project from a vague idea to a live, deployed,
+A PM/strategist who understands how to run a high-context
+orchestrator conversation to resolve ambiguity, produce a minimal
+handoff document, delegate execution to a fresh agent context with
+no state bleed, use external memory rather than conversation memory,
+and apply the Wall Protocol at decision forks rather than just
+blockers, can take a project from a vague idea to a live, deployed,
 self-documented artifact in a single Saturday session.
 
 The methodology is not theoretical. This session is the receipt.
 
 ---
 
-## Entry 004 — The Combination Failure
+## Entry 004: The Combination Failure
 **Date**: 2026-04-10
 **Phase**: Post-build review
 
@@ -260,7 +257,7 @@ The methodology is not theoretical. This session is the receipt.
 
 Two individually reasonable decisions were made in sequence:
 
-1. **Option 1 — direct browser API call** was chosen over a Cloudflare
+1. **Option 1: direct browser API call** was chosen over a Cloudflare
    Worker proxy. Reasoning: portfolio demo, deployer controls access,
    proxy adds infrastructure complexity not justified for this use case.
    Documented in ADR-005. Comment added to source. Looked thorough.
@@ -304,21 +301,19 @@ documented ignorance that passes review.
 ### The fix
 
 Redesign OrchestratorPanel to accept a user-supplied API key in
-the UI. The key lives in component state only — never in the bundle,
+the UI. The key lives in component state only, never in the bundle,
 never committed, never transmitted except to the API it calls.
-This is strictly better than the original approach:
-- No key in build artifacts
-- No proxy infrastructure needed
-- The visitor uses their own key — nothing is hardcoded on the
-  deployer's side
-- Makes the demo self-serve for anyone who wants to try it
+This is strictly better than the original approach. No key appears
+in build artifacts. No proxy infrastructure is needed. The visitor
+uses their own key, so nothing is hardcoded on the deployer's side,
+and the demo becomes self-serve for anyone who wants to try it.
 
 ### The protocol fix
 
 Before any deployment step, run this checklist:
 
 1. Does this deployment make anything public that was not public before?
-2. If yes — what secrets are now in scope of the public surface?
+2. If yes, what secrets are now in scope of the public surface?
 3. Are any secrets baked into build artifacts (JS bundles, config files)?
 4. Is any secret one natural-next-step away from being in scope?
 
@@ -338,7 +333,7 @@ That is the difference between documentation and accountability.
 
 ---
 
-## Entry 005 — The Sequence Inversion
+## Entry 005: The Sequence Inversion
 **Date**: 2026-04-10
 **Phase**: Post-build review
 
@@ -396,7 +391,7 @@ which the protection is unconditional rather than aspirational.
 
 ---
 
-## Entry 006 — Decision Point: Demo API Key Architecture
+## Entry 006: Decision Point: Demo API Key Architecture
 **Date**: 2026-04-10
 **Phase**: Security remediation
 
@@ -404,7 +399,7 @@ Three approaches were considered in sequence before arriving at
 the correct architecture. The progression is worth documenting
 because each rejection teaches something different.
 
-### Approach 1 — Build-time env var (VITE_ANTHROPIC_API_KEY)
+### Approach 1: Build-time env var (VITE_ANTHROPIC_API_KEY)
 
 Initially accepted with an ADR (ADR-005). A comment was added to
 the source. The tradeoff was documented. It looked considered.
@@ -416,9 +411,9 @@ not. The ADR documented the tradeoff without resolving it — which
 is the more dangerous failure mode: documented ignorance that
 passes review.
 
-### Approach 2 — User-supplied key field in the UI
+### Approach 2: User-supplied key field in the UI
 
-Proposed as the fix. A text input in the panel — visitor pastes
+Proposed as the fix. A text input in the panel: the visitor pastes
 their own Anthropic key, it lives in component state only, never
 in the bundle.
 
@@ -427,14 +422,14 @@ first-time visitor. A portfolio demo that asks for your API key
 before you can see it work is solving the deployer's security
 problem by creating a trust problem for the visitor. Wrong trade.
 
-### Approach 3 — Cloudflare Worker proxy (chosen)
+### Approach 3: Cloudflare Worker proxy (chosen)
 
-Key stored as a Cloudflare Worker secret — never in the bundle,
+Key stored as a Cloudflare Worker secret, never in the bundle,
 never in the repo, never client-side. Visitor experience is
 seamless. Rate limiting (10 requests/IP/hour) prevents abuse.
 Hard spend cap in Anthropic Console ($20/month) is the final
-backstop. Haiku is the cheapest model — ~$0.001 per run.
-Portfolio demo traffic is effectively free.
+backstop. Haiku is the cheapest model at approximately $0.001
+per run. Portfolio demo traffic is effectively free.
 
 This is also the architecture documented in
 `INFRASTRUCTURE_POLICY.md` — the demo runs on its own security
@@ -459,7 +454,7 @@ theoretical. This session is the receipt.
 ## On Human Oversight
 
 This build required active human judgment at several points that
-no agent caught independently — the API key exposure being the
+no agent caught independently, the API key exposure being the
 clearest example. The agents reasoned well locally. They missed
 the combination. A human connecting the dots across the full
 context caught it.
@@ -490,7 +485,7 @@ compaction for a full framework bootstrap is an acceptable outcome.
 
 The atomic task delegation philosophy applies to all projects built
 *using* this framework. It could not be fully applied to the project
-that *defined* it. This is the bootstrap exception — noted,
+that *defined* it. This is the bootstrap exception, noted,
 understood, and not repeated.
 
 ---
@@ -505,9 +500,9 @@ going forward.
 
 All future sessions follow this process:
 
-1. Open `PROJECT_STATUS.md` — read the handoff document
+1. Open `PROJECT_STATUS.md` and read the handoff document
 2. Open a fresh Claude Code session
-3. Paste the first atomic task only — nothing else
+3. Paste the first atomic task only, nothing else
 4. Confirm output before proceeding
 5. Commit after each completed task
 6. Update `PROJECT_NARRATIVE.md` with any decisions or lessons from that task
