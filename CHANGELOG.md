@@ -7,10 +7,48 @@ Format: date, what changed, and why it mattered.
 
 ## 2026-04-12
 
-### Session 2 — Status sync + bootstrap layer completion
+### Session 2 — Framework completion + src/core/ executable layer
 
-**Updated** `framework/PROJECT_STATUS.md` — reflected current state accurately;
-prior version was stale from Session 1 end.
+**Added** `framework/ORCHESTRATION_PROTOCOL.md` — session pattern, handoff
+document format, context budget rules, multi-agent sequencing, and Agent
+Teams pattern with file ownership rules and spawn prompt template.
+
+**Added** `framework/INFRASTRUCTURE_POLICY.md` — deployment target decision
+tree, environment separation, Cloudflare Worker setup and CORS rules, AWS
+baseline (EC2, IAM, systemd), GitHub Actions deploy rules.
+
+**Added** `framework/BACKUP_POLICY.md` — what needs backup vs. what git handles,
+secrets backup via password manager, S3 encrypted backup pattern, recovery
+runbook requirements, verification protocol.
+
+**Added** `framework/TASK_LEDGER.md` — cost tracking log template with column
+definitions, cost formula, and first real Session 1 entries (~$0.49 total).
+
+**Added** `framework/RETROFIT_GUIDE.md` — secrets scan procedure, gap audit
+checklist, priority-ordered additions (safety → continuity → cost → full
+coverage), retrofit checklist template, known targets (job bot + ARIA).
+
+**Added** `src/core/` — seven reference implementation modules:
+`config.py` (typed settings + startup validation),
+`budget_guard.py` (per-call and session spend enforcement),
+`logging_config.py` (structured JSON/text logging),
+`rate_limiter.py` (token bucket, sync + async),
+`task_schema.py` (Task, TaskResult, ComplexityTier Pydantic models),
+`agent_dispatcher.py` (model selection, budget/rate check, API dispatch),
+`aws_config_validator.py` (credential check, identity log, service probes).
+
+**Added** `tests/smoke_test.py` — 14-test baseline covering all src/core/
+modules. Live API call auto-skips on placeholder key. 14/14 passing.
+
+**Added** `pyproject.toml` — dependencies declared, ruff configured (E, F, B,
+S, T20, I rule sets), pytest path set.
+
+**Added** `.env.example` — all required environment variables documented.
+
+**Added** ADR-007 (src/core/ as reference implementations) and ADR-008
+(Agent Teams lead model: Sonnet not Opus) to DECISIONS.md.
+
+**Updated** `framework/PROJECT_STATUS.md` — all items complete.
 
 ---
 

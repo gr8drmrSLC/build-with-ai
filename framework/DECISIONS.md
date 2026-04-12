@@ -13,6 +13,24 @@ Format per entry:
 
 ---
 
+## ADR-008 — Agent Teams lead model: Sonnet, not Opus
+**Date**: 2026-04-12
+**Decision**: In the Agent Teams pattern, the orchestration/lead role uses Sonnet, not Opus.
+**Context**: An Agent Teams configuration was proposed with Opus 4.6 as lead. Orchestration tasks (planning, routing, synthesis) are the highest-token workload in any session — the lead reads full project context repeatedly. Opus at $15/M input + $75/M output makes this significantly expensive as a default.
+**Rejected alternatives**: Opus as permanent lead.
+**Reason**: Sonnet handles orchestration well at $3/M input + $15/M output — 5× cheaper. Opus is reserved for a single hard architectural decision where the cost is justified by irreversibility. It is not justified as a session-level default. The Opus reservation rule is already in AI_DELEGATION_POLICY.md; this ADR applies it explicitly to the teams pattern.
+
+---
+
+## ADR-007 — src/core/ as reference implementations, not just stubs
+**Date**: 2026-04-12
+**Decision**: The `src/core/` modules in this repo are working reference implementations, not placeholder stubs.
+**Context**: `bootstrap.sh` creates stubs in target projects. The question was whether this repo should also contain only stubs (simpler) or full implementations (more useful as a reference).
+**Rejected alternatives**: Stubs only in this repo, pointing users to documentation.
+**Reason**: A framework that documents patterns but does not demonstrate them is weaker than one that does both. The reference implementations are also the test subjects for `smoke_test.py`. Keeping them working and tested means the framework itself stays honest — if a module is broken, the smoke test says so.
+
+---
+
 ## ADR-006 — Cloudflare Worker proxy for OrchestratorPanel API calls
 **Date**: 2026-04-10
 **Decision**: OrchestratorPanel calls a Cloudflare Worker proxy, not the Anthropic API directly. The API key is stored as a Cloudflare Worker secret — never in the JS bundle, never in the repo.
