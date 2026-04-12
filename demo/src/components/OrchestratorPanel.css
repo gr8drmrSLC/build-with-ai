@@ -136,15 +136,7 @@
 
 .output-bullet {
   color: #c0c0c0;
-  padding-left: 0.75rem;
-  position: relative;
-}
-
-.output-bullet::before {
-  content: '—';
-  color: #666;
-  left: 0;
-  position: absolute;
+  padding-left: 0.5rem;
 }
 
 .output-table-row {

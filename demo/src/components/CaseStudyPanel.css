@@ -126,15 +126,7 @@
   color: #b8b8b8;
   font-size: 0.78rem;
   line-height: 1.6;
-  padding-left: 0.9rem;
-  position: relative;
-}
-
-.cs-bullet::before {
-  content: '—';
-  color: #555;
-  left: 0;
-  position: absolute;
+  padding-left: 0.5rem;
 }
 
 .cs-numbered {

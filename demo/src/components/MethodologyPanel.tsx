@@ -16,13 +16,13 @@ const STEPS = [
   {
     number: '03',
     title: 'Design the system, then record why',
-    body: 'Architecture Decision Records (ADRs) capture what was decided, what was rejected, and why. Not for documentation\'s sake — for the next session, the next collaborator, or the next Claude context window that needs to understand the project without relitigating every choice.',
+    body: 'Architecture Decision Records (ADRs) capture what was decided, what was rejected, and why. Not for documentation\'s sake, but for the next session, the next collaborator, or the next Claude context window that needs to understand the project without relitigating every choice.',
     principle: 'Decisions not recorded get made again, worse.',
   },
   {
     number: '04',
     title: 'Delegate execution, not judgment',
-    body: 'The orchestrator (this conversation) stays lean: architecture, decisions, narrative, task ledger only. Everything executable gets delegated to a subagent born with exactly what it needs. Context compaction is real — the orchestrator/subagent pattern routes around it.',
+    body: 'The orchestrator (this conversation) stays lean: architecture, decisions, narrative, task ledger only. Everything executable gets delegated to a subagent born with exactly what it needs. Context compaction is real, and the orchestrator/subagent pattern routes around it.',
     principle: 'A subagent that closes carries nothing forward. That is the point.',
   },
   {
@@ -45,8 +45,8 @@ export default function MethodologyPanel() {
       <p className="panel-label">The Framework</p>
       <p className="methodology-intro">
         Six practices that prevent the architecture failures behind most AI project breakdowns.
-        Not invented here — synthesized from ADRs, FinOps, OWASP, and the Well-Architected Framework,
-        translated into PM/strategist language.
+        Not invented here, but synthesized from ADRs, FinOps, OWASP, and the Well-Architected Framework
+        and translated into PM/strategist language.
       </p>
       <ol className="steps-list">
         {STEPS.map(step => (
