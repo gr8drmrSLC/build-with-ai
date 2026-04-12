@@ -1,73 +1,79 @@
 # PROJECT_STATUS.md
 
-Last updated: 2026-04-10
-Updated by: Claude Sonnet 4.6 (session: CORE FILES)
+Last updated: 2026-04-12
+Updated by: Claude Sonnet 4.6 (session: Session 2)
 
 ---
 
 ## Current State
 
-The demo is functionally complete. All three panels have real content.
-Framework core files are written. The repo is self-bootstrapping.
+Demo is live. Framework bootstrap layer complete. Repo is self-bootstrapping
+and deployable to new projects via `bootstrap.sh`.
 
 **GitHub**: https://github.com/gr8drmrSLC/build-with-ai
-**Live demo**: Deploy wired — pending one manual step:
-  repo Settings → Pages → Source → GitHub Actions
-  (The push that added MethodologyPanel qualifies as the trigger —
-  set Pages source and the deploy will run immediately.)
+**Live demo**: https://gr8drmrslc.github.io/build-with-ai/
+**Worker**: https://build-with-ai-proxy.vision2reality.workers.dev
 
 ---
 
 ## What Is Built
 
 ### Infrastructure
-- [x] `.gitignore` — committed first; `!.env.example` negation confirmed working
+- [x] `.gitignore` — committed first
 - [x] Repo skeleton — `framework/`, `demo/`, `README.md`
 - [x] GitHub repo live: `gr8drmrSLC/build-with-ai`
 - [x] GitHub Actions deploy workflow — path-filtered to `demo/**`
+- [x] Cloudflare Worker proxy — rate-limited, key server-side, CORS locked
+- [x] GitHub Pages live — https://gr8drmrslc.github.io/build-with-ai/
 
-### Framework files (11 of ~18)
+### Framework files (14 of ~18)
 - [x] `CLAUDE.md` — session protocol, 8-step safety, Wall Protocol, delegation
-- [x] `DECISIONS.md` — ADR-001 through ADR-005
+- [x] `DECISIONS.md` — ADR-001 through ADR-006
 - [x] `PROJECT_STATUS.md` — this file
-- [x] `PROJECT_NARRATIVE.md` — Entry 001 (founding session) + Entry 002 (Wall Protocol)
+- [x] `PROJECT_NARRATIVE.md` — 8 entries + session protocol
 - [x] `ARCHITECTURE.md` — component map, data flow, deployment, ADR index
 - [x] `AI_DELEGATION_POLICY.md` — capability matrix, model selection, Wall Protocol detail
-- [x] `SECURITY.md` — threat model, secret handling, secrets scan, incident response
-- [x] `BUDGET_POLICY.md` — cost reference, spend limits, budget_guard pattern, TASK_LEDGER format
-- [x] `GIT_POLICY.md` — non-negotiables, commit message rules, branching, .gitattributes
-- [x] `DEVELOPMENT_PROTOCOL.md` — 8-step protocol with examples, scope creep rule, smoke test
-- [x] `CONVENTIONS.md` — Python + TypeScript style, file organization, .env.example format
+- [x] `SECURITY.md` — threat model, secret handling, pre-deployment checklist, incident response
+- [x] `BUDGET_POLICY.md` — cost reference, spend limits, budget_guard pattern
+- [x] `GIT_POLICY.md` — non-negotiables, commit message rules, branching
+- [x] `DEVELOPMENT_PROTOCOL.md` — 8-step protocol with examples, scope creep rule
+- [x] `CONVENTIONS.md` — Python + TypeScript style, file organization
+- [x] `USER_MANUAL.md` — full workflow: install, first session, core loop, non-negotiables
+- [x] `PROJECT_BRIEF_TEMPLATE.md` — pre-session planning template
+- [x] `bootstrap.sh` — one command deploys framework to any new project
 
 ### Demo app (`demo/`)
 - [x] Vite + TypeScript, dark theme, responsive three-panel layout
 - [x] `MethodologyPanel` — 6-step walkthrough with principle lines
-- [x] `OrchestratorPanel` — live Claude API streaming (Haiku); KNOWN TRADEOFF comment + ADR-005
+- [x] `OrchestratorPanel` — live Claude API streaming via Cloudflare Worker
 - [x] `CaseStudyPanel` — fetches `PROJECT_NARRATIVE.md` live from GitHub raw API
+- [x] Contrast pass completed — all body text #999+, interactive elements visible
 - [x] Build verified clean (tsc + vite, 0 errors)
-- [x] `demo/.env.example` — documents `VITE_ANTHROPIC_API_KEY`
 
 ---
 
 ## What Is Not Built Yet
 
 ### Framework files (remaining)
-- [ ] `BACKUP_POLICY.md`
-- [ ] `INFRASTRUCTURE_POLICY.md`
-- [ ] `ORCHESTRATION_PROTOCOL.md`
-- [ ] `PROJECT_BRIEF_TEMPLATE.md`
-- [ ] `TASK_LEDGER.md`
-- [ ] `USER_MANUAL.md`
-- [ ] `RETROFIT_GUIDE.md` — **backlog** — retrofit checklist for job bot + ARIA
+- [ ] `ORCHESTRATION_PROTOCOL.md` — subagent prompt design, handoff format, session pattern
+- [ ] `INFRASTRUCTURE_POLICY.md` — cloud services, deployment targets, access rules
+- [ ] `BACKUP_POLICY.md` — what gets backed up, how, frequency
+- [ ] `TASK_LEDGER.md` — running log of API calls, model used, cost, outcome
+- [ ] `RETROFIT_GUIDE.md` — **backlog** — gap audit + checklist; targets: job bot + ARIA
 
 ### `src/core/` Python modules
-- [ ] `budget_guard.py`, `agent_dispatcher.py`, `task_schema.py`
-- [ ] `logging_config.py`, `config.py`, `rate_limiter.py`, `aws_config_validator.py`
-- [ ] Bootstrap: `pyproject.toml`, `.pre-commit-config.yaml`, `bootstrap.sh`, `.env.example`
+- [ ] `config.py` — env loading, validation, typed settings
+- [ ] `budget_guard.py` — session spend tracking, hard cap enforcement
+- [ ] `agent_dispatcher.py` — model selection logic, subagent prompt builder
+- [ ] `task_schema.py` — Pydantic task/result models
+- [ ] `logging_config.py` — structured logging setup
+- [ ] `rate_limiter.py` — token bucket for API call throttling
+- [ ] `aws_config_validator.py` — region, credential, permission checks
+- [ ] Bootstrap files: `pyproject.toml`, `.pre-commit-config.yaml`, `tests/smoke_test.py`
 
 ### Repo hygiene
-- [ ] Root `CHANGELOG.md`
-- [ ] `demo/` — remove Vite boilerplate assets (hero.png, react.svg, vite.svg) and `index.css` reset conflicts
+- [ ] Root `CHANGELOG.md` — required by CLAUDE.md session end protocol
+- [ ] `demo/` — remove Vite boilerplate assets (react.svg, vite.svg) and unused CSS
 
 ---
 
@@ -75,18 +81,16 @@ Framework core files are written. The repo is self-bootstrapping.
 
 None blocking.
 
-**Pending manual action**: GitHub Pages source → "GitHub Actions"
-
 ---
 
 ## Next Task
 
-Write root `CHANGELOG.md` to capture this session's work, then move to
-`src/core/` Python modules — starting with `config.py` and `budget_guard.py`
-as the two that the remaining modules depend on.
+Write root `CHANGELOG.md` — captures all Session 1 work and satisfies the
+session end protocol requirement that has been technically violated since
+the file was never created. Small task, unblocks the hygiene item.
 
-Alternatively: pivot to LinkedIn posts and PDF summary (Saturday deliverable 3 + 4)
-now that the demo is demonstrable. User to direct.
+After that: `src/core/` Python modules, starting with `config.py` and
+`budget_guard.py` (the two everything else depends on).
 
 ---
 
@@ -95,3 +99,6 @@ now that the demo is demonstrable. User to direct.
 - `RETROFIT_GUIDE.md` — gap audit, priority order, secrets scan on commit history,
   8-step protocol introduction, `retrofit_checklist.md` template.
   Real targets: job search bot, ARIA.
+- Demo boilerplate cleanup (react.svg, vite.svg, unused CSS)
+- LinkedIn posts (methodology intro + job bot case study)
+- One-page PDF methodology summary
