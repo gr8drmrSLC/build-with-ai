@@ -5,7 +5,7 @@
 }
 
 .methodology-intro {
-  color: #888;
+  color: #b8b8b8;
   font-size: 0.8rem;
   line-height: 1.55;
 }
@@ -31,7 +31,7 @@
 }
 
 .step-number {
-  color: #555;
+  color: #777;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -39,21 +39,21 @@
 }
 
 .step-title {
-  color: #d0d0d0;
+  color: #e8e8e8;
   font-size: 0.82rem;
   font-weight: 600;
   line-height: 1.3;
 }
 
 .step-body {
-  color: #999;
+  color: #c0c0c0;
   font-size: 0.79rem;
   line-height: 1.65;
   padding-left: 1.6rem;
 }
 
 .step-principle {
-  color: #666;
+  color: #999;
   font-size: 0.74rem;
   font-style: italic;
   line-height: 1.4;

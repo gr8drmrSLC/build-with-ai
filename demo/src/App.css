@@ -24,8 +24,8 @@ body {
   align-items: center;
   gap: 1.5rem;
   padding: 1rem 2rem;
-  border-bottom: 1px solid #2a2a2a;
-  background: #161616;
+  border-bottom: 1px solid #333;
+  background: #1a1a1a;
 }
 
 .app-header h1 {
@@ -39,14 +39,14 @@ body {
 .tagline {
   flex: 1;
   font-size: 0.85rem;
-  color: #888;
+  color: #aaa;
 }
 
 .source-link {
   font-size: 0.8rem;
-  color: #888;
+  color: #aaa;
   text-decoration: none;
-  border: 1px solid #3a3a3a;
+  border: 1px solid #555;
   padding: 0.3rem 0.7rem;
   border-radius: 4px;
   white-space: nowrap;
@@ -54,8 +54,8 @@ body {
 }
 
 .source-link:hover {
-  color: #ccc;
-  border-color: #666;
+  color: #ddd;
+  border-color: #888;
 }
 
 /* Three-panel layout */
@@ -68,9 +68,9 @@ body {
 }
 
 .panel {
-  background: #181818;
+  background: #1c1c1c;
   padding: 1.75rem;
-  border-right: 1px solid #252525;
+  border-right: 1px solid #2e2e2e;
   overflow-y: auto;
 }
 
@@ -83,7 +83,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #666;
+  color: #888;
   margin-bottom: 1.5rem;
 }
 
@@ -94,6 +94,6 @@ body {
 
   .panel {
     border-right: none;
-    border-bottom: 1px solid #252525;
+    border-bottom: 1px solid #2e2e2e;
   }
 }

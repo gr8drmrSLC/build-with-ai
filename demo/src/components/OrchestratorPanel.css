@@ -6,7 +6,7 @@
 
 .orchestrator-description {
   font-size: 0.82rem;
-  color: #888;
+  color: #b8b8b8;
   line-height: 1.5;
 }
 
@@ -17,8 +17,8 @@
 }
 
 .orchestrator-input {
-  background: #1e1e1e;
-  border: 1px solid #555;
+  background: #252525;
+  border: 1px solid #666;
   border-radius: 6px;
   color: #e8e8e8;
   font-family: inherit;
@@ -31,12 +31,12 @@
 }
 
 .orchestrator-input:focus {
-  border-color: #888;
+  border-color: #999;
   outline: none;
 }
 
 .orchestrator-input::placeholder {
-  color: #777;
+  color: #888;
 }
 
 .orchestrator-input:disabled {
@@ -50,7 +50,7 @@
 
 .btn-primary {
   background: #3a3a3a;
-  border: 1px solid #666;
+  border: 1px solid #777;
   border-radius: 4px;
   color: #f0f0f0;
   cursor: pointer;
@@ -63,7 +63,7 @@
 
 .btn-primary:hover:not(:disabled) {
   background: #4a4a4a;
-  border-color: #888;
+  border-color: #999;
 }
 
 .btn-primary:disabled {
@@ -73,9 +73,9 @@
 
 .btn-stop {
   background: transparent;
-  border: 1px solid #333;
+  border: 1px solid #444;
   border-radius: 4px;
-  color: #666;
+  color: #888;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.82rem;
@@ -84,8 +84,8 @@
 }
 
 .btn-stop:hover {
-  border-color: #555;
-  color: #999;
+  border-color: #666;
+  color: #bbb;
 }
 
 .orchestrator-error {
@@ -94,7 +94,7 @@
 }
 
 .orchestrator-output {
-  border-top: 1px solid #252525;
+  border-top: 1px solid #2e2e2e;
   padding-top: 1rem;
 }
 
@@ -106,61 +106,61 @@
 }
 
 .output-h1 {
-  color: #ddd;
+  color: #f0f0f0;
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
 
 .output-h2 {
-  color: #ccc;
+  color: #e0e0e0;
   font-size: 0.88rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
 
 .output-section {
-  color: #ddd;
+  color: #e0e0e0;
   margin-bottom: 0.15rem;
 }
 
 .output-bold {
-  color: #ccc;
+  color: #ddd;
   font-weight: 600;
 }
 
 .output-numbered {
-  color: #bbb;
+  color: #ccc;
   padding-left: 0.25rem;
 }
 
 .output-bullet {
-  color: #aaa;
+  color: #c0c0c0;
   padding-left: 0.75rem;
   position: relative;
 }
 
 .output-bullet::before {
   content: '—';
-  color: #555;
+  color: #666;
   left: 0;
   position: absolute;
 }
 
 .output-table-row {
-  color: #888;
+  color: #aaa;
   font-family: 'Courier New', monospace;
   font-size: 0.75rem;
   white-space: pre-wrap;
 }
 
 .output-line {
-  color: #aaa;
+  color: #c0c0c0;
 }
 
 .output-divider {
   border: none;
-  border-top: 1px solid #252525;
+  border-top: 1px solid #2e2e2e;
   margin: 0.5rem 0;
 }
 

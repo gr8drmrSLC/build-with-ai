@@ -7,7 +7,7 @@
 .cs-loading,
 .cs-error {
   font-size: 0.8rem;
-  color: #444;
+  color: #777;
   font-style: italic;
 }
 
@@ -36,20 +36,20 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #555;
-  background: #1e1e1e;
-  border: 1px solid #2a2a2a;
+  color: #888;
+  background: #252525;
+  border: 1px solid #383838;
   border-radius: 3px;
   padding: 0.1rem 0.4rem;
 }
 
 .cs-date {
   font-size: 0.68rem;
-  color: #444;
+  color: #777;
 }
 
 .cs-title {
-  color: #bbb;
+  color: #e0e0e0;
   font-size: 0.84rem;
   font-weight: 600;
   line-height: 1.3;
@@ -64,7 +64,7 @@
 }
 
 .cs-preview-line {
-  color: #666;
+  color: #b0b0b0;
   font-size: 0.78rem;
   line-height: 1.55;
   overflow: hidden;
@@ -79,7 +79,7 @@
   align-self: flex-start;
   background: none;
   border: none;
-  color: #555;
+  color: #888;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.74rem;
@@ -89,11 +89,11 @@
 }
 
 .cs-toggle:hover {
-  color: #999;
+  color: #ccc;
 }
 
 .cs-toggle--collapse {
-  color: #444;
+  color: #777;
   margin-top: 0.5rem;
 }
 
@@ -107,7 +107,7 @@
 }
 
 .cs-section-label {
-  color: #444;
+  color: #777;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -117,13 +117,13 @@
 }
 
 .cs-p {
-  color: #888;
+  color: #b8b8b8;
   font-size: 0.78rem;
   line-height: 1.6;
 }
 
 .cs-bullet {
-  color: #888;
+  color: #b8b8b8;
   font-size: 0.78rem;
   line-height: 1.6;
   padding-left: 0.9rem;
@@ -132,23 +132,23 @@
 
 .cs-bullet::before {
   content: '—';
-  color: #3a3a3a;
+  color: #555;
   left: 0;
   position: absolute;
 }
 
 .cs-numbered {
-  color: #888;
+  color: #b8b8b8;
   font-size: 0.78rem;
   line-height: 1.6;
   padding-left: 0.25rem;
 }
 
 .cs-code {
-  background: #111;
-  border: 1px solid #1e1e1e;
+  background: #161616;
+  border: 1px solid #2e2e2e;
   border-radius: 4px;
-  color: #555;
+  color: #888;
   font-size: 0.7rem;
   line-height: 1.5;
   margin: 0.4rem 0;
@@ -158,7 +158,7 @@
 }
 
 .cs-table-row {
-  color: #555;
+  color: #888;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
   white-space: pre-wrap;
@@ -166,7 +166,7 @@
 
 .cs-hr {
   border: none;
-  border-top: 1px solid #1e1e1e;
+  border-top: 1px solid #2e2e2e;
   margin: 0.5rem 0;
 }
 
