@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "build-with-ai"
+version = "0.1.0"
+description = "Core infrastructure modules for AI-native project development"
+requires-python = ">=3.11"
+
+dependencies = [
+    "anthropic>=0.40.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "pre-commit>=3.0",
+]
+aws = [
+    "boto3>=1.34",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit (security)
+    "T20", # flake8-print (no print statements)
+    "I",   # isort
+]
+ignore = [
+    "S101", # assert is fine in tests
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "T20"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
