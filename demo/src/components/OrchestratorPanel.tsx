@@ -68,7 +68,7 @@ export default function OrchestratorPanel() {
       if (!res.ok) {
         const body = await res.text()
         if (res.status === 429) {
-          setError('Rate limit reached — 10 requests per hour. Try again later.')
+          setError('Rate limit reached: 10 requests per hour. Try again later.')
         } else {
           setError(`Error ${res.status}: ${body}`)
         }

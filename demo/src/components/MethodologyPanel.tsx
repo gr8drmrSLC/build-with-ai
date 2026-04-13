@@ -10,7 +10,7 @@ const STEPS = [
   {
     number: '02',
     title: 'Protect the repo before anything enters it',
-    body: 'The .gitignore is the first commit — before README, before source, before anything. Secrets in git history require history rewriting. Once a key is pushed, rotation alone is insufficient. Prevention costs nothing; recovery costs hours and breaks collaborator clones.',
+    body: 'The .gitignore is the first commit, before README, before source, before anything. Secrets in git history require history rewriting. Once a key is pushed, rotation alone is insufficient. Prevention costs nothing; recovery costs hours and breaks collaborator clones.',
     principle: 'Security is a sequencing decision, not a feature.',
   },
   {
@@ -28,13 +28,13 @@ const STEPS = [
   {
     number: '05',
     title: 'Change working code with a safety protocol',
-    body: 'Eight steps: state what works, find the smallest change, map the blast radius, make the change, verify it works, verify nothing else broke, commit with a why-not-what message, update the status doc. AI agents are fast and confident — the protocol makes that safe.',
+    body: 'Eight steps: state what works, find the smallest change, map the blast radius, make the change, verify it works, verify nothing else broke, commit with a why-not-what message, update the status doc. AI agents are fast and confident, and the protocol makes that safe.',
     principle: 'The most common failure is a good suggestion that silently breaks something adjacent.',
   },
   {
     number: '06',
     title: 'Keep memory in files, not conversation',
-    body: 'PROJECT_STATUS.md, DECISIONS.md, and PROJECT_NARRATIVE.md survive context compaction. The conversation does not. Every session ends with these files updated. The next session starts by reading them. This repo is self-bootstrapping — a fresh session pointed at it can orient without verbal context.',
+    body: 'PROJECT_STATUS.md, DECISIONS.md, and PROJECT_NARRATIVE.md survive context compaction. The conversation does not. Every session ends with these files updated. The next session starts by reading them. This repo is self-bootstrapping: a fresh session pointed at it can orient without verbal context.',
     principle: 'External memory is the only memory that compounds.',
   },
 ]

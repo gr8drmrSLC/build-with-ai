@@ -9,7 +9,7 @@ export default function App() {
       <header className="app-header">
         <h1>build-with-ai</h1>
         <p className="tagline">
-          A framework for AI-native project development — designed by a PM, built with agents
+          A framework for AI-native project development, designed by a PM, built with agents
         </p>
         <a
           className="source-link"
