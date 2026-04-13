@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "date": "2026-04-13",
+    "theme": "The Problem",
+    "demo_prompt": "Build a prediction markets trading bot that monitors Kalshi, sizes positions automatically, and executes trades via API",
+    "screenshot_note": "Shows a complex AI project decomposed into phases, risks, and agent assignments — the exact failure modes the framework addresses",
+    "screenshot_file": "screenshots/post_01.png",
+    "text": "Five AI projects shipped in the last year.\n\nAn options trading bot. A research agent. A prediction markets bot. An SEO content engine. A job application bot.\n\nEach one hit the same wall. Not model failures. Architecture failures.\n\nNo external memory that survived context compaction. No cost controls before an API call ran away. No delegation policy. No regression safety. No record of why decisions were made.\n\nThe next session started from scratch every time.\n\nThese are not problems Claude solves for you. They are problems you solve before you touch the model.\n\nSo I built a framework.\n\nSix practices. Formal names from engineering culture, translated into PM/strategist language. Tested on real projects. Then used to build the demo that explains it.\n\nThis is the first post in a 12-part series. Each one covers a principle or case study from the framework. The screenshot shows the live demo decomposing a real project idea in real time.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 2,
+    "date": "2026-04-14",
+    "theme": "Principle 1: Frame Before You Build",
+    "demo_prompt": "Build a Slack bot that monitors Hacker News for mentions of my company and sends a daily digest every morning",
+    "screenshot_note": "Shows the framework identifying framing questions before diving into code — complexity tier, clear scope, first atomic task",
+    "screenshot_file": "screenshots/post_02.png",
+    "text": "Most AI projects start with a prompt.\n\nThey should start with a brief.\n\nPractice 1 of the build-with-ai framework: frame the problem before writing a line of code.\n\nA project brief captures the goal, the constraints, and what success looks like. Written before any code, it becomes the handoff document between the high-context design conversation and the fresh executor context that builds.\n\nThis matters more with AI than with traditional development because context degrades. A fresh Claude Code session has no memory of the conversation that produced it. The brief is the interface.\n\nWhen the brief is precise, the executor can orient without verbal context. When it is vague, every session relitigates the same design questions.\n\nThe document you write before starting is not overhead. It is the mechanism that makes the rest of the work compressible.\n\nThe screenshot shows the live demo decomposing this exact kind of project — phases, risks, and first atomic task, before a line of code is written.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 3,
+    "date": "2026-04-15",
+    "theme": "Principle 2: Security is Sequencing",
+    "demo_prompt": "Build a web scraper that collects competitor pricing data and stores it in a PostgreSQL database with an API key for access",
+    "screenshot_note": "Shows the framework surfacing security risks early — API key handling, secrets management — as phase 1 priorities, not afterthoughts",
+    "screenshot_file": "screenshots/post_03.png",
+    "text": "The .gitignore is the first commit.\n\nNot the README. Not the source files. Not the architecture docs.\n\nThe .gitignore.\n\nPractice 2 of the build-with-ai framework: security is a sequencing decision, not a feature.\n\nSecrets in git history require history rewriting. Once a key is pushed, rotating it alone is not sufficient. Collaborator clones already have the history. The only complete remediation is a rewrite that breaks every existing clone.\n\nPrevention costs nothing. Recovery costs hours and breaks your team.\n\nThe same logic applies everywhere. SECURITY.md before the deployment pipeline. The pre-deployment checklist before the first deploy. The budget guard before the first API call.\n\nSequence is not a stylistic preference. It is the mechanism by which protection becomes unconditional rather than aspirational.\n\nIf your security practice happens after the thing it was supposed to govern, it is not a gate. It is a record of what should have been prevented.\n\nThe screenshot shows the demo surfacing API key risks and infrastructure sequencing in a live decomposition.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 4,
+    "date": "2026-04-16",
+    "theme": "Principle 3: Record Why, Not What",
+    "demo_prompt": "Build a React dashboard that streams real-time data from multiple APIs and lets users configure their own views",
+    "screenshot_note": "Shows the framework identifying architectural decision points where ADRs are needed — state management, streaming approach, auth",
+    "screenshot_file": "screenshots/post_04.png",
+    "text": "Git tells you what changed.\n\nIt does not tell you why a different approach was rejected.\n\nPractice 3 of the build-with-ai framework: Architecture Decision Records.\n\nAn ADR captures three things: what was decided, what was rejected, and why. Not for documentation's sake, but for the next session, the next collaborator, or the next Claude context window that needs to understand the project without relitigating every choice.\n\nDecisions not recorded get made again, worse.\n\nWithout an ADR, the next agent session has no way to know you already evaluated the obvious alternative and rejected it for a non-obvious reason. It will recommend it again. You will explain the reason again. The context will compress it again.\n\nADRs break that loop.\n\nOne sentence on what was decided. One sentence on what was rejected. One sentence on why. That is enough.\n\nThe screenshot shows the framework flagging the key architectural risks in a live project where every one of them deserves a recorded decision.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 5,
+    "date": "2026-04-17",
+    "theme": "Principle 4: Delegate Execution, Not Judgment",
+    "demo_prompt": "Build an autonomous research agent that reads academic papers, summarizes findings, and emails a weekly briefing to subscribers",
+    "screenshot_note": "Shows the framework assigning different agents to different phases — Sonnet for planning, Haiku for classification, Codex for implementation",
+    "screenshot_file": "screenshots/post_05.png",
+    "text": "The most common AI development mistake is asking a subagent to do both the thinking and the doing.\n\nPractice 4 of the build-with-ai framework: orchestrator/subagent separation.\n\nThe orchestrator stays lean. Architecture, decisions, narrative, task ledger only. It does not write code. It does not execute tasks. It thinks.\n\nEverything executable gets delegated to a subagent born with exactly what it needs and nothing else. The subagent reads a precise handoff document, completes one task, and closes. It carries nothing forward. That is the point.\n\nContext compaction is real. The orchestrator conversation that accumulates months of architectural thinking will eventually compress. Routing execution to fresh subagents means that compression only affects the orchestrator, not the work product.\n\nThe screenshot shows the agent assignment table the framework produces — which model handles which phase and why.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 6,
+    "date": "2026-04-18",
+    "theme": "Principle 5: Eight-Step Regression Safety",
+    "demo_prompt": "Migrate a production REST API from Python 2 to Python 3 without downtime, with 50,000 daily active users",
+    "screenshot_note": "Shows the framework surfacing regression risk as the dominant concern — exactly the scenario the 8-step protocol is designed for",
+    "screenshot_file": "screenshots/post_06.png",
+    "text": "AI agents are fast. That is also the risk.\n\nPractice 5 of the build-with-ai framework: the 8-step regression safety protocol.\n\nBefore any change to working code:\n\n1. State what is currently working and must not break.\n2. Identify the smallest change that achieves the goal.\n3. Check whether the change affects any other file or system.\n4. Make the change.\n5. Verify the change works.\n6. Verify nothing that was working before is now broken.\n7. Commit with a message that explains why, not just what.\n8. Update the project status document.\n\nThe most common failure in AI-assisted development is not a bad suggestion. It is a good suggestion that silently breaks something adjacent.\n\nAn agent that skips step 3 will fix the bug you showed it and introduce a regression two files away. The protocol does not slow down the agent. It focuses it.\n\nThe screenshot shows a live decomposition where regression risk is flagged as the dominant architectural concern.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 7,
+    "date": "2026-04-19",
+    "theme": "Principle 6: Files Outlive Conversations",
+    "demo_prompt": "Build a multi-session AI coding assistant that remembers project context across conversations and learns from past decisions",
+    "screenshot_note": "Shows the framework identifying external memory architecture as the critical design requirement — the exact problem it was built to solve",
+    "screenshot_file": "screenshots/post_07.png",
+    "text": "Context compaction is not a bug. It is a constraint to design around.\n\nPractice 6 of the build-with-ai framework: keep memory in files, not conversations.\n\nPROJECT_STATUS.md, DECISIONS.md, and PROJECT_NARRATIVE.md survive context compaction. The conversation does not.\n\nEvery session ends with these three files updated. The next session starts by reading them. A fresh Claude Code session pointed at the repo can orient completely, without verbal context, because the files carry the continuity.\n\nThis is not a backup strategy. It is the primary memory architecture.\n\nThe conversation is a scratchpad. The files are the record. Treating them in reverse is the reason most AI projects cannot survive a context reset.\n\nThe build-with-ai repository is self-bootstrapping. A new session reads CLAUDE.md, PROJECT_STATUS.md, and DECISIONS.md in order and knows exactly where to pick up. No explanation required.\n\nExternal memory is the only memory that compounds.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 8,
+    "date": "2026-04-20",
+    "theme": "Case Study: Agents Surface Forks, They Don't Resolve Them",
+    "demo_prompt": "Build a payment processing system that handles subscriptions, refunds, and dispute resolution with Stripe",
+    "screenshot_note": "Shows the framework surfacing the decision forks that require human confirmation — PCI compliance approach, webhook vs polling, error handling strategy",
+    "screenshot_file": "screenshots/post_08.png",
+    "text": "A disciplined agent does not just know what to do when it is stuck.\n\nIt knows what to do at any decision point with non-obvious consequences.\n\nCase study from build-with-ai: the Wall Protocol in practice.\n\nDuring the demo build, the React app needed a Claude API key. The agent identified a fork: direct browser call (simple, exposes the key) or Cloudflare Worker proxy (correct production approach, adds infrastructure overhead).\n\nRather than picking silently, the agent did three things. It surfaced both options. It explained the tradeoff. It asked for confirmation before proceeding.\n\nThat is the Wall Protocol: not a response to being stuck, but a response to any decision point where the consequences are non-obvious and the wrong choice is hard to reverse.\n\nThe behavior did not come from the model. It came from CLAUDE.md. A written protocol produces consistent behavior. The absence of one produces a confident agent making architecture decisions that belong to a human.\n\nThe screenshot shows a live decomposition with exactly the kind of decision forks the Wall Protocol is designed to surface.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 9,
+    "date": "2026-04-21",
+    "theme": "Case Study: The Combination Failure",
+    "demo_prompt": "Build a Chrome extension that saves user browsing history to a cloud database and provides personalized recommendations",
+    "screenshot_note": "Shows the framework identifying the combination risk — data collection plus cloud storage plus browser extension equals a multi-surface security problem",
+    "screenshot_file": "screenshots/post_09.png",
+    "text": "The scariest failures are not the obvious ones.\n\nCase study from build-with-ai: the combination failure.\n\nTwo decisions were made in the same session:\n\n1. Direct browser API call over a Cloudflare Worker proxy. Documented in an ADR. Justified for a portfolio demo. Looked thorough.\n\n2. Public GitHub Pages deployment. Stated goal from the start. Wired via GitHub Actions.\n\nNeither decision was wrong in isolation. Together they created a latent exposure: one step away from embedding a live Anthropic key in a public JS bundle, readable by anyone with DevTools.\n\nNeither Claude Code nor the orchestrator caught the combination.\n\nThe ADR made it worse. It documented the tradeoff and included a trigger for revisiting. That language implied the decisions were sequential. They were simultaneous. The trigger was already met.\n\nThe pre-deployment security checklist now asks: is any secret one natural-next-step away from being in scope? That question is the one this session missed.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 10,
+    "date": "2026-04-22",
+    "theme": "Case Study: The Framework Built With the Framework",
+    "demo_prompt": "Build an AI project management framework with session protocols, agent delegation rules, and a live demo that explains the methodology",
+    "screenshot_note": "Shows the framework decomposing its own creation — meta demonstration that the methodology applies recursively",
+    "screenshot_file": "screenshots/post_10.png",
+    "text": "The strongest proof that a methodology works is that the tool explaining it was built with it.\n\nCase study from build-with-ai: two stages, one Saturday.\n\nStage 1: a long, exploratory claude.ai conversation. Goals unclear at the start. Ranging across positioning, architecture, file structure, and methodology. By the end, the shape of the project was clear.\n\nStage 2: a fresh Claude Code session. It received one document: SATURDAY_BRIEF.md. No access to the brainstorming history. No need for it. The brief contained the goals, the decisions already made, the open questions, and the first task.\n\nThe executor read the brief, confirmed understanding, and built the repo from scratch. Working demo, eleven framework files, live GitHub repo, GitHub Actions deploy pipeline.\n\nThe orchestrator conversation is gone. The repo is still here.\n\nThat is the external memory principle. The work is not in the conversation. The work is in the files.\n\nThe screenshot shows the live demo decomposing a project that is structurally identical to itself.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 11,
+    "date": "2026-04-23",
+    "theme": "Human Judgment Is Not Optional",
+    "demo_prompt": "Build a medical triage assistant that evaluates symptoms, suggests diagnoses, and recommends whether a patient should seek emergency care",
+    "screenshot_note": "Shows the framework correctly flagging this as Critical complexity with explicit human oversight requirements at every decision point",
+    "screenshot_file": "screenshots/post_11.png",
+    "text": "The framework does not automate software development.\n\nIt structures the collaboration.\n\nA build-with-ai session requires active human judgment at several points. The API key architecture case study is the clearest example: agents reasoned well locally, missed the combination, and a human connecting the dots across the full context caught it.\n\nThe human's role in the framework is explicit: define scope, review decisions, catch cross-cutting risks, ask uncomfortable questions.\n\nThe agents handle execution. The human handles judgment.\n\nThis is not a limitation of the current tools. It is the correct architecture for this stage of the technology. An AI agent with no human checkpoint on architecture decisions is fast and plausible and occasionally wrong in ways that take days to untangle.\n\nThe framework is designed to make the human's job as precise and low-friction as possible. One atomic task at a time. Clear handoff documents. Decisions recorded in files. Sessions that close cleanly.\n\nThe screenshot shows the live demo correctly identifying a high-stakes project as one where human oversight is not optional.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  },
+  {
+    "id": 12,
+    "date": "2026-04-24",
+    "theme": "What This Is For",
+    "demo_prompt": "Build a customer service AI platform for an enterprise that handles 10,000 tickets per day across email, chat, and phone",
+    "screenshot_note": "Full decomposition — complexity tier, all phases, all risks, full agent assignment table, first atomic task. Shows the complete framework output",
+    "screenshot_file": "screenshots/post_12.png",
+    "text": "This is not a software engineering project.\n\nIt is a PM/strategist portfolio piece.\n\nbuild-with-ai demonstrates architectural thinking: the ability to take an idea from ambiguity to execution with the rigor of an architect and the communication skills of a strategist.\n\nThe demo makes the methodology interactive. Describe any project idea and the framework decomposes it in real time: complexity tier, phases, risks, agent assignments, first atomic task.\n\nThe framework files make the methodology inspectable. 19 policy documents, 7 Python modules, a bootstrap script that installs the entire stack into any new project.\n\nThe commit history makes it verifiable. The case studies make it human.\n\nThe target roles are Product Manager, AI Product Strategist, and Operations/Automation Lead at organizations building seriously with AI. The differentiator is not the ability to use AI tools. It is the ability to architect the system that governs how those tools are used.\n\nMost teams building with AI are accumulating the failure modes this framework was built to prevent.\n\nCode: https://github.com/gr8drmrSLC/build-with-ai\nLive demo: https://gr8drmrslc.github.io/build-with-ai/"
+  }
+]

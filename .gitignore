@@ -19,3 +19,8 @@ __pycache__/
 
 # Node
 node_modules/
+
+# LinkedIn automation state and screenshots (local execution artifacts)
+scripts/linkedin_post_state.json
+scripts/linkedin_post.log
+scripts/screenshots/
