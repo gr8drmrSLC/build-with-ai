@@ -82,10 +82,23 @@ def capture_post(post: dict, dry_run: bool = False):
         if decompose_btn:
             decompose_btn.click()
             log.info("  Waiting for output...")
-            # Wait up to 30s for output to appear
+            # Wait up to 30s for output or error
             try:
-                page.wait_for_selector(".orchestrator-output", timeout=30000)
+                page.wait_for_selector(
+                    ".orchestrator-output, .orchestrator-error",
+                    timeout=30000,
+                )
                 time.sleep(3)  # let streaming finish
+                # Check for rate limit error
+                error_el = page.query_selector(".orchestrator-error")
+                if error_el:
+                    error_text = error_el.inner_text()
+                    if "Rate limit" in error_text or "429" in error_text:
+                        log.error(f"  RATE LIMITED: {error_text}")
+                        log.error("  Wait ~60 min then re-run: python scripts/capture_demo_screenshot.py --post " + str(post_id))
+                        page.screenshot(path=out_path)
+                        browser.close()
+                        return False
             except Exception:
                 log.warning("  Output did not appear in time — screenshotting anyway")
         else:

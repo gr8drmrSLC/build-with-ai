@@ -2,7 +2,7 @@
 # Creates a Windows Task Scheduler task that posts to LinkedIn at 7am daily.
 # Runs as soon as possible if the 7am window was missed (machine was offline).
 #
-# Run once from an elevated PowerShell prompt:
+# Run once from a normal PowerShell prompt (no elevation needed):
 #   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 #   .\scripts\setup_linkedin_task.ps1
 
@@ -38,7 +38,7 @@ $Settings = New-ScheduledTaskSettingsSet `
 $Principal = New-ScheduledTaskPrincipal `
     -UserId ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name) `
     -LogonType Interactive `
-    -RunLevel Highest
+    -RunLevel Limited
 
 # Register the task
 Register-ScheduledTask `
