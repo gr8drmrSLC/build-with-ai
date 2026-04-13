@@ -16,10 +16,10 @@ raw content API. What you read in the app is always this file.
 
 ### The problem
 
-Across five real projects — an options trading bot, an autonomous
-research agent, a Kalshi prediction markets bot, an SEO content
-engine, and a job application bot — the same failure modes kept
-appearing. Not model failures. Architecture failures.
+Across five real projects, including an options trading bot, an
+autonomous research agent, a Kalshi prediction markets bot, an SEO
+content engine, and a job application bot, the same failure modes
+kept appearing. Not model failures. Architecture failures.
 
 No external memory that survived context compaction. No cost controls
 before an API call ran away. No delegation policy, so every task
@@ -36,7 +36,7 @@ The practices that prevent these failures have formal names: ADRs,
 FinOps, OWASP, the Well-Architected Framework, TDD. But they live
 in engineering culture, not in PM/strategist culture. A product
 manager who understands what to enforce, and why, and how to
-delegate enforcement to agents — that is a different kind of
+delegate enforcement to agents. That is a different kind of
 practitioner than either a traditional PM or a traditional engineer.
 
 The framework is that synthesis. Not invented here. Discovered
@@ -51,8 +51,8 @@ produced a complete project brief: the file structure, the demo
 architecture, the core principles, the agent delegation policy,
 the model selection rules, and the session protocols.
 
-That brief was then handed to a fresh executor context — a new
-Claude Code session with no accumulated state — as a precise,
+That brief was then handed to a fresh executor context, a new
+Claude Code session with no accumulated state, as a precise,
 self-contained handoff document. The executor read it, confirmed
 understanding, and built the repo from scratch.
 
@@ -111,7 +111,7 @@ In order, with the reasoning preserved:
 This repo is a portfolio piece for PM/strategist roles: Product
 Manager, AI Product Strategist, Operations/Automation Lead. It
 demonstrates not software engineering skill but architectural
-thinking — the ability to take an idea from ambiguity to execution
+thinking, the ability to take an idea from ambiguity to execution
 with the rigor of an architect and the communication skills of a
 strategist.
 
@@ -136,16 +136,16 @@ During the OrchestratorPanel build, a decision fork appeared: the
 React app needed an API key to call Claude, but browser-side API
 calls expose the key to anyone with DevTools. Two options:
 
-1. Direct browser call — key in build artifact, acceptable for a
+1. Direct browser call: key in build artifact, acceptable for a
    controlled demo, zero infrastructure overhead
-2. Cloudflare Worker proxy — key server-side, correct production
+2. Cloudflare Worker proxy: key server-side, correct production
    approach, adds a second deployment and CORS configuration
 
 The agent surfaced both options with tradeoffs, made a recommendation
 with explicit justification, and asked for confirmation before
 proceeding. It did not pick one silently. It did not refuse to
 continue without more information. It resolved the fork at the right
-layer — the human decision point.
+layer, the human decision point.
 
 ### Why this belongs in the narrative
 
@@ -170,8 +170,8 @@ is for whoever wants to understand how the project thinks.
 
 ### The meta-observation
 
-The fact that the agent paused at this fork — rather than just
-calling `dangerouslyAllowBrowser: true` and moving on — is
+The fact that the agent paused at this fork, rather than just
+calling `dangerouslyAllowBrowser: true` and moving on, is
 evidence of the thing the framework is trying to demonstrate.
 An agent that proceeds without surfacing tradeoffs is fast but
 untrustworthy. An agent that surfaces tradeoffs, explains them,
@@ -200,21 +200,21 @@ and methodology. Context accumulated. Decisions were made. Tradeoffs
 were weighed. By the end, the shape of the project was clear.
 
 **Stage 2: The executor session** (Claude Code, this session)
-Received `SATURDAY_BRIEF.md` — a single, self-contained handoff
+Received `SATURDAY_BRIEF.md`, a single, self-contained handoff
 document produced by the orchestrator conversation. No access to
 the full brainstorming history. No need for it. The brief contained
 exactly what was needed: goals, structure, decisions already made,
 open questions, and the first task.
 
 The executor read the brief, confirmed understanding, and built
-the repo from scratch — incrementally, one confirmed task at a time,
+the repo from scratch, incrementally, one confirmed task at a time,
 with the session-end protocol updating the files that the next
 session will read.
 
 ### Why the structure matters
 
 The orchestrator conversation is gone. Its context is not recoverable.
-But `SATURDAY_BRIEF.md` survived it — and from that document, a fresh
+But `SATURDAY_BRIEF.md` survived it, and from that document, a fresh
 context with no prior history built a working demo, eleven framework
 files, a live GitHub repo, and a GitHub Actions deploy pipeline.
 
@@ -268,7 +268,7 @@ Two individually reasonable decisions were made in sequence:
 Neither decision was wrong in isolation. Together they created a
 latent exposure: had the Anthropic API key been added as a GitHub
 Actions secret (the obvious next step to make the demo work on the
-live URL), it would have been embedded in the public JS bundle —
+live URL), it would have been embedded in the public JS bundle,
 readable by anyone with DevTools.
 
 Neither Claude Code nor the orchestrator caught the interaction.
@@ -279,7 +279,7 @@ The gap was in the combination.
 ### The actual current exposure
 
 The key was never in the deployed bundle. The GitHub Actions workflow
-builds `demo/` without injecting secrets — `VITE_ANTHROPIC_API_KEY`
+builds `demo/` without injecting secrets: `VITE_ANTHROPIC_API_KEY`
 is undefined at build time, so the panel shows an error on the live
 URL. The exposure was latent: one "add it as a GitHub Actions secret"
 step away from real.
@@ -290,12 +290,12 @@ The key was rotated as a precaution. The architecture was redesigned.
 
 ADR-005 documented the tradeoff and included a trigger for revisiting:
 "if this demo becomes publicly accessible with open access, add the
-proxy." That language implies the two decisions are sequential —
+proxy." That language implies the two decisions are sequential,
 first deploy, then assess. The problem is they were simultaneous.
 The trigger was already met the moment we wired GitHub Actions.
 
 Documentation that looks thorough can create false confidence.
-This is the more dangerous failure mode — not ignorance, but
+This is the more dangerous failure mode, not ignorance, but
 documented ignorance that passes review.
 
 ### The fix
@@ -353,11 +353,11 @@ Correct sequence: security gates first, deployment pipeline second.
 
 The build order followed natural momentum: scaffold the repo,
 wire the demo, get it deployed. Security documentation was
-treated as a parallel track — important, but not blocking.
+treated as a parallel track, important, but not blocking.
 
 The framework's own sequencing rules say otherwise. `SECURITY.md`
 is infrastructure, not documentation. It belongs in the repo before
-the deployment pipeline that it governs — the same logic as
+the deployment pipeline that it governs, by the same logic as
 `.gitignore` being the first commit. A security gate written after
 the thing it was meant to gate is not a gate. It is a record of
 what should have been prevented.
@@ -366,7 +366,7 @@ what should have been prevented.
 
 A framework that describes hypothetical risks is a checklist.
 A framework that catches a real error on the project that built
-it — and documents the catch — is evidence.
+it, and documents the catch, is evidence.
 
 The pre-deployment checklist in `SECURITY.md` exists because this
 session needed it and didn't have it. The sequence rule exists
@@ -407,7 +407,7 @@ the source. The tradeoff was documented. It looked considered.
 Rejected when we recognized that "portfolio demo" plus "public
 deployment" plus "key in JS bundle" combine into a live exposure.
 Each decision looked reasonable in isolation. The combination did
-not. The ADR documented the tradeoff without resolving it — which
+not. The ADR documented the tradeoff without resolving it, which
 is the more dangerous failure mode: documented ignorance that
 passes review.
 
@@ -432,7 +432,7 @@ backstop. Haiku is the cheapest model at approximately $0.001
 per run. Portfolio demo traffic is effectively free.
 
 This is also the architecture documented in
-`INFRASTRUCTURE_POLICY.md` — the demo runs on its own security
+`INFRASTRUCTURE_POLICY.md`: the demo runs on its own security
 framework. The proof of concept proves the framework it describes.
 
 ### Key lesson
@@ -445,7 +445,7 @@ pipeline before we built the security gate.
 
 Correct sequence: security gates first, deployment second.
 
-This is Case Study 1, Entry 1 — the framework catching its own
+This is Case Study 1, Entry 1, the framework catching its own
 violation on its first build day. The methodology is not
 theoretical. This session is the receipt.
 
@@ -476,7 +476,7 @@ correct architecture for this stage of the technology.
 
 This framework was built in a single long Claude Code session rather
 than delegated atomic tasks. That was the correct approach for this
-specific project — the framework itself was the shared context, and
+specific project: the framework itself was the shared context, and
 every decision was interdependent. No clean seams existed to delegate
 along until the structure was established.
 
@@ -495,7 +495,7 @@ understood, and not repeated.
 **Phase**: Session close
 
 This session established the framework but was built as one long
-compacting context — necessary for bootstrap, not the pattern
+compacting context, necessary for bootstrap, not the pattern
 going forward.
 
 All future sessions follow this process:
@@ -515,13 +515,13 @@ GitHub is the source of truth, not conversation history.
 Close each session once its work is committed.
 
 This is the orchestrator/subagent pattern applied to Claude Code
-sessions themselves — each session is a fresh subagent,
+sessions themselves: each session is a fresh subagent,
 `PROJECT_STATUS.md` is the handoff document, and the repo is the
 external memory that survives every context boundary.
 
 ---
 
-## First Live Demo Run — PBJ Decomposition
+## First Live Demo Run: PBJ Decomposition
 **Date**: 2026-04-10
 
 First real output from the live demo: "make a pbj."
@@ -534,9 +534,9 @@ cutting board.
 
 This was the right output.
 
-A framework that correctly identifies a sandwich as Simple — and
-doesn't invent unnecessary phases, assign expensive models, or
-manufacture architectural concerns — is more credible than one
+A framework that correctly identifies a sandwich as Simple, and
+that doesn't invent unnecessary phases, assign expensive models, or
+manufacture architectural concerns, is more credible than one
 that does. Calibration matters more than impressiveness. The
 tendency to over-engineer is the failure mode this framework
 exists to prevent. It would be embarrassing if the demo exhibited
