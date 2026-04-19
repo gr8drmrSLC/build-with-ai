@@ -35,7 +35,7 @@ _DEFAULT_SESSION = os.path.normpath(os.path.join(
     SCRIPTS_DIR, "..", "..", "job-search", "data", "sessions", "linkedin_session.json"
 ))
 SESSION_PATH = os.environ.get("LINKEDIN_SESSION_PATH", _DEFAULT_SESSION)
-HEADLESS = os.environ.get("LINKEDIN_HEADLESS", "true").lower() == "true"
+HEADLESS = os.environ.get("LINKEDIN_HEADLESS", "false").lower() == "true"
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
@@ -115,111 +115,71 @@ def _verify_login(page) -> bool:
 
 # ── Post ──────────────────────────────────────────────────────────────────────
 
-def post_to_linkedin(page, text: str, screenshot_path: str | None) -> bool:
-    log.info("Opening post composer...")
+def _open_and_fill(page, text: str, screenshot_path: str | None) -> bool:
+    """Open the LinkedIn post composer and fill it. Returns True if ready to post."""
 
-    # Click the Start a post button
-    start_selectors = [
-        "button.share-box-feed-entry__trigger",
-        "button[aria-label*='Start a post']",
-        "div.share-box-feed-entry__top-bar button",
-        "button:has-text('Start a post')",
-    ]
-    clicked = False
-    for sel in start_selectors:
-        try:
-            el = page.wait_for_selector(sel, timeout=5000, state="visible")
-            if el:
-                el.click()
-                clicked = True
-                log.info(f"  Opened via: {sel}")
-                break
-        except Exception:
-            continue
-
-    if not clicked:
-        log.error("  Could not find 'Start a post' button")
+    # LinkedIn uses obfuscated CSS classes — use text/role selectors only.
+    # Headless mode prevents the modal from rendering; browser must run headed.
+    try:
+        page.get_by_text("Start a post", exact=True).first.click()
+        log.info("  Clicked Start a post")
+    except Exception as e:
+        log.error(f"  Could not find 'Start a post' button: {e}")
         return False
 
-    _delay(1500, 2500)
+    _delay(2500, 3500)
 
-    # Type post content
-    editor_selectors = [
-        "div.ql-editor",
-        "div[contenteditable='true'][role='textbox']",
-        "div[data-placeholder]",
-    ]
-    typed = False
-    for sel in editor_selectors:
-        try:
-            el = page.wait_for_selector(sel, timeout=5000, state="visible")
-            if el:
-                el.click()
-                _delay(400, 700)
-                # Use keyboard to type (more natural, avoids paste detection)
-                page.keyboard.type(text, delay=10)
-                typed = True
-                log.info(f"  Text entered via: {sel}")
-                break
-        except Exception:
-            continue
-
-    if not typed:
-        log.error("  Could not find post editor")
+    # Playwright locators pierce shadow DOM automatically.
+    editor = page.locator("div.ql-editor")
+    try:
+        editor.wait_for(state="visible", timeout=8000)
+    except Exception:
+        log.error("  Post composer did not open (ql-editor not found)")
         return False
 
+    editor.click()
+    _delay(300, 500)
+    editor.fill(text)
+    log.info("  Text filled into editor")
     _delay(800, 1200)
 
-    # Attach image if available
+    # Image attachment via file chooser
     if screenshot_path and os.path.exists(screenshot_path):
         log.info(f"  Attaching image: {screenshot_path}")
-        image_btn_selectors = [
-            "button[aria-label*='Add a photo']",
-            "button[aria-label*='photo']",
-            "label[for*='image']",
-            "button.share-creation-state__media-button",
-        ]
-        for sel in image_btn_selectors:
-            try:
-                el = page.query_selector(sel)
-                if el and el.is_visible():
-                    el.click()
-                    _delay(1000, 1500)
-                    # Handle file chooser
-                    with page.expect_file_chooser(timeout=5000) as fc_info:
-                        el.click()
-                    file_chooser = fc_info.value
-                    file_chooser.set_files(screenshot_path)
-                    log.info("  Image attached")
-                    _delay(2000, 3000)
-                    break
-            except Exception as e:
-                log.warning(f"  Image attach via {sel}: {e}")
-                continue
+        try:
+            # The photo icon is inside the shadow DOM — force=True bypasses pointer interception
+            with page.expect_file_chooser(timeout=6000) as fc_info:
+                page.get_by_text("Photo", exact=True).first.click(force=True)
+            fc_info.value.set_files(screenshot_path)
+            log.info("  Image attached")
+            _delay(2000, 3000)
+        except Exception as exc:
+            log.warning(f"  Image attach failed: {exc} — posting text only")
     elif screenshot_path:
         log.warning(f"  Screenshot not found: {screenshot_path} — posting text only")
 
     _delay(1000, 1500)
+    return True
 
-    # Click Post button
-    post_btn_selectors = [
-        "button.share-actions__primary-action",
-        "button[aria-label='Post']",
-        "button:has-text('Post'):not(:has-text('Start'))",
-        "div[role='dialog'] button.artdeco-button--primary",
-    ]
-    for sel in post_btn_selectors:
-        try:
-            el = page.wait_for_selector(sel, timeout=5000, state="visible")
-            if el and el.is_visible() and el.is_enabled():
-                el.click()
-                log.info(f"  Posted via: {sel}")
-                _delay(3000, 5000)
-                return True
-        except Exception:
-            continue
 
-    log.error("  Post button not found")
+def post_to_linkedin(page, text: str, screenshot_path: str | None) -> bool:
+    log.info("Opening post composer...")
+
+    if not _open_and_fill(page, text, screenshot_path):
+        return False
+
+    # Playwright locator finds the Post button even inside shadow DOM.
+    # Use .last — the modal's Post button is the final one on the page.
+    try:
+        post_btn = page.locator("button").filter(has_text="Post").last
+        post_btn.click(timeout=10000)
+        log.info("  Posted")
+        _delay(3000, 5000)
+        return True
+    except Exception as e:
+        log.error(f"  Post button error: {e}")
+
+    log.error("  Post button not found or not enabled")
     return False
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -243,6 +203,7 @@ def show_status():
 def main():
     parser = argparse.ArgumentParser(description="Post next scheduled LinkedIn entry")
     parser.add_argument("--dry-run", action="store_true", help="Show content without posting")
+    parser.add_argument("--test", action="store_true", help="Open browser, fill composer, take screenshot, then close WITHOUT posting")
     parser.add_argument("--status", action="store_true", help="Show schedule status and exit")
     args = parser.parse_args()
 
@@ -278,6 +239,29 @@ def main():
     except ImportError:
         log.error("playwright not installed. Run: pip install playwright && playwright install chromium")
         sys.exit(1)
+
+    if args.test:
+        log.info("TEST MODE — will open composer, fill content, screenshot, then close without posting")
+        with sync_playwright() as p:
+            browser, context, page = _build_context(p)
+            try:
+                if not _verify_login(page):
+                    sys.exit(1)
+                _open_and_fill(page, post["text"], screenshot_path)
+                test_shot = os.path.join(SCRIPTS_DIR, "test_composer_preview.png")
+                page.screenshot(path=test_shot)
+                log.info(f"  Screenshot saved: {test_shot}")
+                # Close the modal
+                try:
+                    page.keyboard.press("Escape")
+                except Exception:
+                    pass
+                _delay(1000, 1500)
+            finally:
+                context.close()
+                browser.close()
+        log.info("TEST MODE complete. No post was sent.")
+        return
 
     success = False
     with sync_playwright() as p:

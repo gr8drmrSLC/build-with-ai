@@ -298,6 +298,105 @@ Synthesize when all agents report idle: [what the synthesis should produce]
 
 ---
 
+## Worktree Isolation for True Parallel Execution
+
+The Agent Teams pattern uses file ownership enforced by prompt. That is
+soft enforcement. Git worktrees make it hard enforcement: each agent gets
+its own directory on its own branch. Two agents cannot conflict because
+they are not in the same filesystem location.
+
+### When to use worktrees
+
+Use worktrees when:
+- Two or more agents will be running simultaneously (not just sequentially)
+- You cannot guarantee agents will respect file ownership rules by prompt alone
+- A merge conflict would be costly to resolve and easy to prevent
+
+Use prompt-only ownership (the default) when:
+- Agents are time-shifted, not truly simultaneous
+- The task scope is narrow enough that overlap is unlikely
+- You need results fast and the coordination overhead is not worth it
+
+### The worktree lifecycle
+
+**1. Orchestrator creates isolated checkouts before spawning**
+
+```bash
+git worktree add ../project-agent-research -b feat/research-task
+git worktree add ../project-agent-impl      -b feat/impl-task
+git worktree add ../project-agent-qa        -b feat/qa-task
+```
+
+Each worktree is a fully independent working directory. Agents write
+to their own directory. No locks, no coordination at the filesystem level.
+
+**2. Spawn each agent pointed at its worktree**
+
+Each Claude Code terminal opens the worktree path as its project root,
+not the main repo. The agent reads CLAUDE.md, does its work, commits
+to its branch, and closes.
+
+**3. Orchestrator merges after all agents close**
+
+```bash
+# From the main repo
+git merge feat/research-task
+git merge feat/impl-task
+git merge feat/qa-task
+```
+
+Resolve any conflicts here. Run the smoke test. If clean, the merge
+is the commit that represents the team's combined output.
+
+**4. Clean up worktrees**
+
+```bash
+git worktree remove ../project-agent-research
+git worktree remove ../project-agent-impl
+git worktree remove ../project-agent-qa
+git branch -d feat/research-task feat/impl-task feat/qa-task
+```
+
+### Updated spawn prompt template with worktrees
+
+```
+Orchestrator creates worktrees first:
+  git worktree add ../[project]-research -b feat/[task]-research
+  git worktree add ../[project]-impl     -b feat/[task]-impl
+  git worktree add ../[project]-qa       -b feat/[task]-qa
+
+research-agent (working directory: ../[project]-research):
+  Goal: [specific research objective]
+  Deliverable: write findings to /research/[output-file].md
+  When done: commit, close terminal
+
+impl-agent (working directory: ../[project]-impl):
+  Goal: [specific implementation objective]
+  Dependency: wait for research-agent to commit before starting
+  Deliverable: [file paths], smoke_test.py passes
+  When done: commit, close terminal
+
+qa-agent (working directory: ../[project]-qa):
+  Goal: [validation objective]
+  Dependency: impl-agent must complete first
+  Deliverable: test results written to /tests/[report].md
+  When done: commit, close terminal
+
+Orchestrator merges all three branches, resolves conflicts, runs final
+smoke test, commits the synthesis, removes worktrees.
+```
+
+### What this enables
+
+For a project with four independent pending tasks, the orchestrator
+assigns each track to its own worktree and spawns four Claude Code
+terminals simultaneously. The constraint is no longer the filesystem.
+The only remaining constraint is logical dependency: tasks that depend
+on each other's output must still be sequenced. Tasks that do not
+can run in parallel without any coordination.
+
+---
+
 ## The Handoff Document Is the Interface
 
 In software, an interface defines the contract between two components.
