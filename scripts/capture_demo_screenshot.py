@@ -104,8 +104,14 @@ def capture_post(post: dict, dry_run: bool = False):
         else:
             log.warning("  Decompose button not found")
 
-        page.screenshot(path=out_path, full_page=False)
-        log.info(f"  Saved: {out_path}")
+        # Screenshot just the center panel — full-page at 1440px makes text unreadable
+        panel = page.query_selector(".orchestrator-panel")
+        if panel:
+            panel.screenshot(path=out_path)
+            log.info(f"  Saved (center panel): {out_path}")
+        else:
+            page.screenshot(path=out_path, full_page=False)
+            log.info(f"  Saved (full page fallback): {out_path}")
         browser.close()
     return True
 
