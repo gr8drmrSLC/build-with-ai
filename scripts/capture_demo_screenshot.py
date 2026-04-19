@@ -82,33 +82,63 @@ def capture_post(post: dict, dry_run: bool = False):
         if decompose_btn:
             decompose_btn.click()
             log.info("  Waiting for output...")
-            # Wait up to 30s for output or error
+            # Wait for output div to appear
             try:
                 page.wait_for_selector(
                     ".orchestrator-output, .orchestrator-error",
                     timeout=30000,
                 )
-                time.sleep(3)  # let streaming finish
-                # Check for rate limit error
-                error_el = page.query_selector(".orchestrator-error")
-                if error_el:
-                    error_text = error_el.inner_text()
-                    if "Rate limit" in error_text or "429" in error_text:
-                        log.error(f"  RATE LIMITED: {error_text}")
-                        log.error("  Wait ~60 min then re-run: python scripts/capture_demo_screenshot.py --post " + str(post_id))
-                        page.screenshot(path=out_path)
-                        browser.close()
-                        return False
             except Exception:
                 log.warning("  Output did not appear in time — screenshotting anyway")
+
+            # Check for rate limit error before waiting for stream to finish
+            error_el = page.query_selector(".orchestrator-error")
+            if error_el:
+                error_text = error_el.inner_text()
+                if "Rate limit" in error_text or "429" in error_text:
+                    log.error(f"  RATE LIMITED: {error_text}")
+                    log.error("  Wait ~60 min then re-run: python scripts/capture_demo_screenshot.py --post " + str(post_id))
+                    page.screenshot(path=out_path)
+                    browser.close()
+                    return False
+
+            # Wait for streaming to complete — Stop button disappears when done
+            try:
+                page.wait_for_selector("button.btn-stop", state="hidden", timeout=30000)
+                log.info("  Streaming complete")
+                time.sleep(1)
+            except Exception:
+                log.warning("  Stop button did not hide in time — waiting 5s then continuing")
+                time.sleep(5)
         else:
             log.warning("  Decompose button not found")
 
-        # Screenshot just the center panel — full-page at 1440px makes text unreadable
+        # Screenshot the panel clipped to actual content height — excludes empty space below output
         panel = page.query_selector(".orchestrator-panel")
         if panel:
-            panel.screenshot(path=out_path)
-            log.info(f"  Saved (center panel): {out_path}")
+            box = panel.bounding_box()
+            # Measure how far down the actual content reaches
+            content_height = page.evaluate("""
+                () => {
+                    const panel = document.querySelector('.orchestrator-panel');
+                    if (!panel) return 800;
+                    const panelTop = panel.getBoundingClientRect().top;
+                    let maxBottom = panelTop;
+                    for (const el of panel.querySelectorAll('*')) {
+                        const r = el.getBoundingClientRect();
+                        if (r.height > 0 && r.bottom > maxBottom) maxBottom = r.bottom;
+                    }
+                    return maxBottom - panelTop + 32;
+                }
+            """)
+            clip_height = min(content_height, box["height"])
+            page.screenshot(path=out_path, clip={
+                "x": box["x"],
+                "y": box["y"],
+                "width": box["width"],
+                "height": clip_height,
+            })
+            log.info(f"  Saved (center panel, {int(box['width'])}x{int(clip_height)}px): {out_path}")
         else:
             page.screenshot(path=out_path, full_page=False)
             log.info(f"  Saved (full page fallback): {out_path}")
