@@ -115,49 +115,136 @@ def _verify_login(page) -> bool:
 
 # ── Post ──────────────────────────────────────────────────────────────────────
 
+def _focus_shadow_editor(page) -> bool:
+    """Walk all shadow roots to find and focus the Quill editor."""
+    return bool(page.evaluate("""
+        () => {
+            function find(root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+                let node;
+                while (node = walker.nextNode()) {
+                    if (node.contentEditable === 'true' &&
+                        node.getAttribute('aria-label') === 'Text editor for creating content') {
+                        node.focus(); node.click(); return true;
+                    }
+                    if (node.shadowRoot && find(node.shadowRoot)) return true;
+                }
+                return false;
+            }
+            return find(document);
+        }
+    """))
+
+
+def _click_post_button(page) -> bool:
+    """Walk shadow roots to find and click the Post button."""
+    return bool(page.evaluate("""
+        () => {
+            function find(root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+                let node;
+                while (node = walker.nextNode()) {
+                    if (node.tagName === 'BUTTON' &&
+                        (node.innerText || '').trim() === 'Post' &&
+                        !node.disabled) {
+                        node.click(); return true;
+                    }
+                    if (node.shadowRoot && find(node.shadowRoot)) return true;
+                }
+                return false;
+            }
+            return find(document);
+        }
+    """))
+
+
 def _open_and_fill(page, text: str, screenshot_path: str | None) -> bool:
-    """Open the LinkedIn post composer and fill it. Returns True if ready to post."""
+    """
+    Open the LinkedIn post composer and fill it with text and optional image.
 
-    # LinkedIn uses obfuscated CSS classes — use text/role selectors only.
-    # Headless mode prevents the modal from rendering; browser must run headed.
-    try:
-        page.get_by_text("Start a post", exact=True).first.click()
-        log.info("  Clicked Start a post")
-    except Exception as e:
-        log.error(f"  Could not find 'Start a post' button: {e}")
-        return False
+    Photo-first flow (when image present):
+      Feed "Photo" button → media editor → set_input_files → Next → text composer
 
-    _delay(2500, 3500)
+    Text-only flow (no image):
+      Feed "Start a post" → text composer directly
 
-    # Playwright locators pierce shadow DOM automatically.
-    editor = page.locator("div.ql-editor")
-    try:
-        editor.wait_for(state="visible", timeout=8000)
-    except Exception:
-        log.error("  Post composer did not open (ql-editor not found)")
-        return False
+    The feed-bar Photo button is a native button outside shadow DOM and directly
+    accessible. The file input in the media editor accepts set_input_files() without
+    needing a file chooser dialog. This is the correct approach — learned from ARIA's
+    update_linkedin.py which posts two screenshots per post successfully.
+    """
+    has_image = bool(screenshot_path and os.path.exists(screenshot_path))
 
-    editor.click()
-    _delay(300, 500)
-    editor.fill(text)
-    log.info("  Text filled into editor")
-    _delay(800, 1200)
-
-    # Image attachment via file chooser
-    if screenshot_path and os.path.exists(screenshot_path):
-        log.info(f"  Attaching image: {screenshot_path}")
+    if has_image:
+        # Photo-first flow
         try:
-            # The photo icon is inside the shadow DOM — force=True bypasses pointer interception
-            with page.expect_file_chooser(timeout=6000) as fc_info:
-                page.get_by_text("Photo", exact=True).first.click(force=True)
-            fc_info.value.set_files(screenshot_path)
-            log.info("  Image attached")
-            _delay(2000, 3000)
-        except Exception as exc:
-            log.warning(f"  Image attach failed: {exc} — posting text only")
-    elif screenshot_path:
-        log.warning(f"  Screenshot not found: {screenshot_path} — posting text only")
+            photo_btn = page.get_by_role("button", name="Photo")
+            photo_btn.wait_for(state="visible", timeout=8000)
+            photo_btn.click()
+            log.info("  Photo button clicked (feed bar)")
+        except Exception as e:
+            log.warning(f"  Feed Photo button not found ({e}) — falling back to text-only")
+            has_image = False
 
+    if has_image:
+        _delay(1500, 2500)
+        file_input = page.query_selector("input[type='file']")
+        if file_input:
+            file_input.set_input_files(screenshot_path)
+            log.info(f"  Image set: {os.path.basename(screenshot_path)}")
+            _delay(3000, 5000)
+
+            # Click Next to advance from media editor to text composer
+            try:
+                next_btn = page.get_by_role("button", name="Next", exact=True)
+                next_btn.wait_for(state="visible", timeout=8000)
+                next_btn.click()
+                log.info("  Clicked Next — in text composer")
+                _delay(2000, 3000)
+            except Exception as e:
+                log.error(f"  Next button not found: {e}")
+                return False
+        else:
+            log.warning("  File input not found — falling back to text-only")
+            has_image = False
+
+    if not has_image:
+        # Text-only flow
+        try:
+            page.get_by_text("Start a post", exact=True).first.click()
+            log.info("  Opened text-only composer")
+            _delay(2500, 3500)
+        except Exception as e:
+            log.error(f"  Could not open composer: {e}")
+            return False
+
+    # Type text — editor lives in shadow DOM; walk to find and focus it
+    focused = False
+    for attempt in range(5):
+        if _focus_shadow_editor(page):
+            focused = True
+            log.info("  Editor focused")
+            break
+        _delay(600, 1000)
+
+    if not focused:
+        # Fallback: Playwright locator pierces shadow DOM for fill
+        try:
+            editor = page.locator("div.ql-editor")
+            editor.wait_for(state="visible", timeout=6000)
+            editor.click()
+            _delay(300, 500)
+            editor.fill(text)
+            log.info("  Text filled via locator fallback")
+            _delay(800, 1200)
+            return True
+        except Exception as e:
+            log.error(f"  Could not focus editor: {e}")
+            return False
+
+    _delay(300, 600)
+    page.keyboard.type(text, delay=random.randint(15, 35))
+    log.info("  Text typed")
     _delay(1000, 1500)
     return True
 
@@ -168,18 +255,22 @@ def post_to_linkedin(page, text: str, screenshot_path: str | None) -> bool:
     if not _open_and_fill(page, text, screenshot_path):
         return False
 
-    # Playwright locator finds the Post button even inside shadow DOM.
-    # Use .last — the modal's Post button is the final one on the page.
-    try:
-        post_btn = page.locator("button").filter(has_text="Post").last
-        post_btn.click(timeout=10000)
+    # Post button is inside shadow DOM — walk to find it
+    if _click_post_button(page):
         log.info("  Posted")
+        _delay(3000, 5000)
+        return True
+
+    # Fallback: Playwright locator
+    try:
+        page.locator("button").filter(has_text="Post").last.click(timeout=8000)
+        log.info("  Posted via locator fallback")
         _delay(3000, 5000)
         return True
     except Exception as e:
         log.error(f"  Post button error: {e}")
 
-    log.error("  Post button not found or not enabled")
+    log.error("  Post button not found")
     return False
 
 # ── Main ──────────────────────────────────────────────────────────────────────
