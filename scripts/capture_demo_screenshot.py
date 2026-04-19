@@ -131,7 +131,9 @@ def capture_post(post: dict, dry_run: bool = False):
                     return maxBottom - panelTop + 32;
                 }
             """)
-            clip_height = min(content_height, box["height"])
+            # Cap at 900px — content can be 2000px+ but LinkedIn max portrait is 4:5.
+            # 900px at ~460px wide ≈ 1:2 ratio, good for LinkedIn feed display.
+            clip_height = min(content_height, box["height"], 900)
             page.screenshot(path=out_path, clip={
                 "x": box["x"],
                 "y": box["y"],
