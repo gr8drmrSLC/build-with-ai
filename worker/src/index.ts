@@ -16,7 +16,7 @@
 
 interface Env {
   ANTHROPIC_API_KEY: string
-  RATE_LIMIT_KV?: KVNamespace  // Optional — rate limiting disabled if not bound
+  RATE_LIMIT_KV: KVNamespace  // Required — Worker rejects requests if not bound
 }
 
 const ALLOWED_ORIGIN = 'https://gr8drmrslc.github.io'
@@ -43,25 +43,27 @@ export default {
       return jsonError(405, 'Method not allowed')
     }
 
-    // Rate limiting — skip gracefully if KV not configured
-    if (env.RATE_LIMIT_KV) {
-      const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown'
-      const key = `rl:${ip}`
-      const raw = await env.RATE_LIMIT_KV.get(key)
-      const count = raw ? parseInt(raw, 10) : 0
-
-      if (count >= RATE_LIMIT_MAX) {
-        return jsonError(
-          429,
-          'Rate limit reached — 10 requests per hour per visitor. Try again later.',
-        )
-      }
-
-      // Increment with TTL so the window resets automatically
-      await env.RATE_LIMIT_KV.put(key, String(count + 1), {
-        expirationTtl: RATE_LIMIT_WINDOW_SEC,
-      })
+    // Rate limiting — fail-closed: reject if KV is not bound
+    if (!env.RATE_LIMIT_KV) {
+      return jsonError(503, 'Service unavailable — rate limiting not configured.')
     }
+
+    const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown'
+    const key = `rl:${ip}`
+    const raw = await env.RATE_LIMIT_KV.get(key)
+    const count = raw ? parseInt(raw, 10) : 0
+
+    if (count >= RATE_LIMIT_MAX) {
+      return jsonError(
+        429,
+        'Rate limit reached — 10 requests per hour per visitor. Try again later.',
+      )
+    }
+
+    // Increment with TTL so the window resets automatically
+    await env.RATE_LIMIT_KV.put(key, String(count + 1), {
+      expirationTtl: RATE_LIMIT_WINDOW_SEC,
+    })
 
     // Parse and validate request body
     let body: string

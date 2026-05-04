@@ -15,6 +15,8 @@ sophisticated. They are mundane and almost entirely preventable.
 |-------------------------------|------------|----------|-------------------------------------|
 | API key committed to git      | High       | Critical | .gitignore first; pre-commit hook   |
 | API key in log output         | Medium     | High     | Sanitized logging (logging_config)  |
+| Bot abuse of public paid endpoint | High   | High     | Rate limiting (fail-closed) + CAPTCHA + provider spend cap |
+| Notification/webhook feedback loop | Medium | High     | Failure alerts must route to a different channel; never retry via the same path that failed |
 | Overspend on API calls        | Medium     | High     | budget_guard.py; spend limits       |
 | .env file pushed to GitHub    | Medium     | Critical | .gitignore + git secret scan        |
 | Credentials in error messages | Medium     | High     | Never format secrets into strings   |
@@ -235,7 +237,20 @@ decisions — which is where real exposures come from.
 **If any answer is yes and not already mitigated**: stop, fix the
 architecture, then deploy. Not the other way around.
 
+6. **Does this deployment expose any public endpoint that triggers a paid external API?**
+   Answer the three questions from the Public Endpoint Security Gate in CLAUDE.md:
+   - Can a bot hit this endpoint in a loop? → rate limiting required, fail-closed
+   - Does each hit trigger a paid API call? → CAPTCHA required
+   - What is the worst-case cost at 100,000 hits? → set provider spend cap before enabling
+
+   Rate limiting that silently disables itself when misconfigured is not rate limiting.
+   Set the spend cap in the provider console *before* the endpoint goes live, not after.
+
 This checklist was added after a session where two individually
 reasonable decisions (direct browser API call + public GitHub Pages
 deployment) combined to create a latent exposure. See PROJECT_NARRATIVE
 Entry 004 for the full account.
+
+Item 6 was added after reviewing real incidents where public endpoints
+triggered runaway paid API spend. The three questions are the minimum
+standard — apply them before any public route goes live.

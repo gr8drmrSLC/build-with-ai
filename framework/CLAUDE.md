@@ -102,6 +102,29 @@ Architecture judgment?     → Claude Code (sparingly)
 
 ---
 
+## Public Endpoint Security Gate
+
+Before any public route goes to production, answer these three questions.
+This is mandatory — apply at Sprint 1, not after go-live.
+
+**1. Can a bot hit this endpoint in a loop?**
+If yes: add rate limiting at both the CDN/edge layer (Cloudflare rule) and
+in application code. Rate limiting must fail-closed — if the limiter is
+misconfigured, reject the request, do not proceed unprotected.
+
+**2. Does each hit trigger a paid external API call?**
+If yes: add CAPTCHA (hCaptcha or Cloudflare Turnstile) so bots that do not
+execute JavaScript cannot submit. Rate limiting alone is not sufficient.
+
+**3. What is the worst-case cost at 100,000 hits?**
+Calculate it. If non-trivial (> $10): set a hard spend cap in the provider
+console *before* enabling the feature. Document the cap in DECISIONS.md.
+
+If all three answers are "no risk": document that conclusion in DECISIONS.md
+and proceed. The goal is a conscious decision, not a checkbox.
+
+---
+
 ## Budget Guard
 
 Never call a paid API without knowing the approximate cost.
