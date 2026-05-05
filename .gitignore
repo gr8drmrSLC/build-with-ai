@@ -24,3 +24,4 @@ node_modules/
 scripts/linkedin_post_state.json
 scripts/linkedin_post.log
 scripts/screenshots/
+scripts/linkedin_session.json

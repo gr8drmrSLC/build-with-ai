@@ -31,9 +31,7 @@ SCHEDULE_PATH = os.path.join(SCRIPTS_DIR, "linkedin_schedule.json")
 STATE_PATH = os.path.join(SCRIPTS_DIR, "linkedin_post_state.json")
 SCREENSHOTS_DIR = os.path.join(SCRIPTS_DIR, "screenshots")
 
-_DEFAULT_SESSION = os.path.normpath(os.path.join(
-    SCRIPTS_DIR, "..", "..", "job-search", "data", "sessions", "linkedin_session.json"
-))
+_DEFAULT_SESSION = os.path.join(SCRIPTS_DIR, "linkedin_session.json")
 SESSION_PATH = os.environ.get("LINKEDIN_SESSION_PATH", _DEFAULT_SESSION)
 HEADLESS = os.environ.get("LINKEDIN_HEADLESS", "false").lower() == "true"
 
@@ -73,7 +71,7 @@ def _delay(min_ms: int = 1000, max_ms: int = 2500):
 def _check_session():
     if not os.path.exists(SESSION_PATH):
         log.error(f"LinkedIn session not found: {SESSION_PATH}")
-        log.error("Run: cd job-search && python scripts/save_session.py")
+        log.error("Run: python scripts/save_linkedin_session.py")
         sys.exit(1)
     log.info(f"Session: {SESSION_PATH}")
 
@@ -104,13 +102,18 @@ def _build_context(playwright):
 
 def _verify_login(page) -> bool:
     log.info("Verifying session...")
+    # Warmup on homepage first — lets Cloudflare issue a fresh __cf_bm token
+    # before we navigate to an authenticated page. Without this, an expired
+    # __cf_bm in the session file causes a checkpoint redirect even when li_at is valid.
+    page.goto("https://www.linkedin.com/", timeout=20000)
+    _delay(2500, 4000)
     page.goto("https://www.linkedin.com/feed/", timeout=20000)
     _delay(2000, 3500)
     url = page.url
     on_auth = any(s in url for s in ("login", "signup", "authwall", "checkpoint"))
     logged_in = "linkedin.com" in url and not on_auth
     if not logged_in:
-        log.error("Session expired. Re-run: python job-search/scripts/save_session.py")
+        log.error("Session expired. Re-run: python scripts/save_linkedin_session.py")
     return logged_in
 
 # ── Post ──────────────────────────────────────────────────────────────────────
@@ -137,16 +140,18 @@ def _focus_shadow_editor(page) -> bool:
 
 
 def _click_post_button(page) -> bool:
-    """Walk shadow roots to find and click the Post button."""
-    return bool(page.evaluate("""
+    """Click the Post button — shadow DOM walk first, then direct selectors."""
+    # Shadow DOM walk: match by innerText or aria-label
+    clicked = bool(page.evaluate("""
         () => {
             function find(root) {
                 const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
                 let node;
                 while (node = walker.nextNode()) {
-                    if (node.tagName === 'BUTTON' &&
-                        (node.innerText || '').trim() === 'Post' &&
-                        !node.disabled) {
+                    const tag = node.tagName;
+                    const text = (node.innerText || '').trim();
+                    const label = node.getAttribute('aria-label') || '';
+                    if (tag === 'BUTTON' && (text === 'Post' || label === 'Post') && !node.disabled) {
                         node.click(); return true;
                     }
                     if (node.shadowRoot && find(node.shadowRoot)) return true;
@@ -156,6 +161,23 @@ def _click_post_button(page) -> bool:
             return find(document);
         }
     """))
+    if clicked:
+        return True
+    # Direct selectors — more specific, less likely to match wrong buttons
+    for sel in [
+        "button.share-actions__primary-action",
+        "button[aria-label='Post']",
+        "button:has-text('Post')",
+    ]:
+        try:
+            el = page.wait_for_selector(sel, timeout=4000, state="visible")
+            if el:
+                el.click()
+                log.info(f"  Post button clicked via: {sel}")
+                return True
+        except Exception:
+            continue
+    return False
 
 
 def _open_and_fill(page, text: str, screenshot_path: str | None) -> bool:
@@ -195,8 +217,9 @@ def _open_and_fill(page, text: str, screenshot_path: str | None) -> bool:
             _delay(3000, 5000)
 
             # Click Next to advance from media editor to text composer
+            # Use test-id to avoid matching the carousel's Next button
             try:
-                next_btn = page.get_by_role("button", name="Next", exact=True)
+                next_btn = page.get_by_test_id("interop-shadowdom").get_by_role("button", name="Next")
                 next_btn.wait_for(state="visible", timeout=8000)
                 next_btn.click()
                 log.info("  Clicked Next — in text composer")
