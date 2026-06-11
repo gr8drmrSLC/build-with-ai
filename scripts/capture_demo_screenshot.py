@@ -10,6 +10,7 @@ Usage:
 
 Output: scripts/screenshots/post_NN.png
 Requires: playwright  (pip install playwright && playwright install chromium)
+         Pillow      (pip install Pillow)
 """
 
 import argparse
@@ -18,6 +19,38 @@ import logging
 import os
 import sys
 import time
+
+# LinkedIn target: 1080x1350 (4:5 portrait) — fills feed and lightbox properly
+LI_W, LI_H = 1080, 1350
+LI_BG = (18, 18, 18)  # dark background matching the demo UI
+
+
+def _resize_for_linkedin(path: str) -> None:
+    """Scale and center-pad screenshot to 1080x1350 for LinkedIn."""
+    try:
+        from PIL import Image
+    except ImportError:
+        log.warning("Pillow not installed — skipping LinkedIn resize. Run: pip install Pillow")
+        return
+
+    img = Image.open(path).convert("RGB")
+    w, h = img.size
+
+    # Scale to fill full width; crop bottom if scaled height exceeds LI_H
+    scale = LI_W / w
+    new_w = LI_W
+    new_h = int(h * scale)
+    img = img.resize((new_w, new_h), Image.LANCZOS)
+    if new_h > LI_H:
+        img = img.crop((0, 0, LI_W, LI_H))
+        new_h = LI_H
+
+    # Center vertically on dark background (only matters when new_h < LI_H)
+    canvas = Image.new("RGB", (LI_W, LI_H), LI_BG)
+    y = (LI_H - new_h) // 2
+    canvas.paste(img, (0, y))
+    canvas.save(path)
+    log.info(f"  Resized to LinkedIn format: {LI_W}x{LI_H} (content {new_w}x{new_h})")
 
 DEMO_URL = "https://gr8drmrslc.github.io/build-with-ai/"
 SCHEDULE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "linkedin_schedule.json")
@@ -141,9 +174,11 @@ def capture_post(post: dict, dry_run: bool = False):
                 "height": clip_height,
             })
             log.info(f"  Saved (center panel, {int(box['width'])}x{int(clip_height)}px): {out_path}")
+            _resize_for_linkedin(out_path)
         else:
             page.screenshot(path=out_path, full_page=False)
             log.info(f"  Saved (full page fallback): {out_path}")
+            _resize_for_linkedin(out_path)
         browser.close()
     return True
 
