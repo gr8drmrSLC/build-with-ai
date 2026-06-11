@@ -1,15 +1,16 @@
 # PROJECT_STATUS.md
 
-Last updated: 2026-05-05
-Updated by: Claude Sonnet 4.6 (Session 3)
+Last updated: 2026-06-11
+Updated by: Claude Sonnet 4.6 (Session 4)
 
 ---
 
 ## Current State
 
-Framework is complete and in active use. LinkedIn series is in progress.
-Security hardening applied this session. Both this repo and ARIA now have
-independent, self-contained LinkedIn posting pipelines.
+Framework is complete and in active use. LinkedIn 12-post series is complete
+(all posts sent 2026-04-13 through 2026-05-22, confirmed via
+`scripts/linkedin_post_state.json` and `scripts/linkedin_post.log`). Both this
+repo and ARIA have independent, self-contained LinkedIn posting pipelines.
 
 **GitHub**: https://github.com/gr8drmrSLC/build-with-ai
 **Live demo**: https://gr8drmrslc.github.io/build-with-ai/
@@ -67,7 +68,7 @@ independent, self-contained LinkedIn posting pipelines.
 ### Tests
 - [x] `tests/smoke_test.py` — 14/14 passing
 
-### LinkedIn posting pipeline — active
+### LinkedIn posting pipeline — series complete
 - [x] `scripts/linkedin_schedule.json` — 12-post series defined
 - [x] `scripts/post_linkedin_daily.py` — posts next scheduled entry
 - [x] `scripts/save_linkedin_session.py` — one-time interactive session creator
@@ -75,7 +76,8 @@ independent, self-contained LinkedIn posting pipelines.
 - [x] `scripts/run_linkedin_post.bat` — Task Scheduler wrapper
 - [x] `scripts/linkedin_session.json` — local session file (gitignored)
 - [x] Windows Task Scheduler task `LinkedInBuildWithAI` — daily 7 AM, catch-up enabled
-- [x] **4 of 12 posts sent** — series posts 5–12 scheduled for daily 7 AM
+- [x] **12 of 12 posts sent — series complete** (2026-04-13 to 2026-05-22). Daily
+      task now runs as a no-op ("All posts have been sent. Nothing to do.").
 
 ---
 
@@ -89,11 +91,15 @@ independent, self-contained LinkedIn posting pipelines.
 
 ## Open Questions
 
-- `framework/PROJECT_NARRATIVE.md` Entry 007 (Twilio incident case study) — drafted locally, held. Publish once root cause is fully confirmed.
-- LinkedIn series posts 5–12 — running automatically at 7 AM daily.
+- `framework/PROJECT_NARRATIVE.md` Entry 007 (Twilio incident case study) — draft now present in the working tree (uncommitted). Needs review and commit.
 
 ---
 
 ## Next Task
 
-Continue LinkedIn series (automated). When series completes at post 12, assess what content comes next — consider a second series on real-world project case studies (ARIA, investor bot).
+LinkedIn series complete (12/12) — decide what content comes next. Consider a
+second series on real-world project case studies (ARIA, investor bot).
+
+Before starting new content: triage uncommitted session-3 work in the working
+tree (Entry 007 draft, LinkedIn screenshot resize feature in
+`capture_demo_screenshot.py`, and stray debug/screenshot artifacts in `scripts/`).

@@ -521,6 +521,94 @@ external memory that survives every context boundary.
 
 ---
 
+## Entry 007: The Feedback Loop — What the Bot Attack Was Not
+**Date**: 2026-05-04
+**Phase**: Post-incident correction
+
+### The original report
+
+An AI-built insurance business intelligence system sent 148,277 SMS
+messages at $0.0083 each ($1,235.19) over three days before the Twilio
+account auto-suspended. The initial report described this as a bot
+discovering a public lead-capture form and flooding it with unique fake
+phone numbers that bypassed duplicate detection.
+
+That diagnosis was wrong.
+
+### What actually happened
+
+During Twilio's A2P carrier vetting period, all outbound messages were
+rejected by the carrier. The system was configured to send an SMS
+alert to the agent on every failed delivery.
+
+When the first outbound message failed, the delivery webhook fired and
+sent a new SMS alert. That alert also failed for the same reason. The
+webhook fired again. The loop repeated 148,277 times over three days
+until the account balance went negative and Twilio suspended service.
+
+Zero form submissions were involved. Zero leads were created. The entire
+incident was self-generated — the system created its own runaway spend
+from a single initial failure.
+
+### Why the misdiagnosis persisted
+
+The symptom looked like a bot attack: thousands of messages, rapid
+accumulation, no human-visible source. The investigation started from
+that assumption and worked backward, finding plausible evidence for it
+(the public form, the unique phone number generation path) without
+verifying it.
+
+The correct diagnosis required reading Twilio's error logs, not the
+lead database. The data that would have shown zero new leads was not
+the first place anyone looked.
+
+### The correct fix
+
+One rule: a failed SMS must never trigger another SMS.
+
+Failure notifications route to email. A failed email cannot trigger a
+webhook. The loop is physically impossible.
+
+The fixes applied to the public form (Cloudflare rate limiting, hCaptcha,
+FastAPI rate limiting) addressed a threat that did not cause the incident.
+They are still correct defenses against bot abuse of public endpoints.
+They would not have prevented this incident.
+
+### The lesson for AI-assisted development
+
+AI tools build what you describe. The notification feature was described
+correctly and built correctly. What neither the developer nor the AI
+explicitly considered was the failure path: what happens when the
+notification itself fails?
+
+The question to ask before shipping any notification or alert system:
+
+**What happens if this action fails? If the answer is that it triggers
+the same action again, you have a loop risk.**
+
+This applies to webhooks, retry logic, status callbacks, and any
+automated response to a system event. AI tools will not catch this
+unless you ask the question explicitly — because the description of
+the feature does not include a description of its failure mode.
+
+The pre-deployment checklist for any notification system now includes:
+map every failure path. If a failure path leads back to the same
+notification channel, break the loop before deploying.
+
+### What this corrects in this project
+
+Entry 007 corrects an error in the SECURITY.md threat model, which
+initially listed this incident under "bot abuse of public paid endpoint."
+That threat is real and worth modeling. This incident was not an
+example of it.
+
+The feedback loop threat is now its own row in the threat model.
+The incident is referenced accurately. Documentation that records
+a corrected mistake is more trustworthy than documentation that
+records only the version that looked right at first.
+
+---
+
 ## First Live Demo Run: PBJ Decomposition
 **Date**: 2026-04-10
 
