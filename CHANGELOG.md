@@ -5,6 +5,73 @@ Format: date, what changed, and why it mattered.
 
 ---
 
+## 2026-06-11 — Session 4 — LinkedIn series completion + framework validation
+
+### LinkedIn series complete (12/12)
+
+**Added** `framework/PROJECT_NARRATIVE.md` Entry 007 — "The Feedback Loop: What
+the Bot Attack Was Not", a post-incident case study revisiting the Session 3
+incident with corrected analysis.
+
+**Fixed** `scripts/capture_demo_screenshot.py` — resize LinkedIn screenshots to
+1080x1350 (LinkedIn's correct image aspect ratio, superseding the Session 3
+900px height cap); added a recapture helper script for re-generating existing
+screenshots.
+
+**Added** `worker/package-lock.json` — pins Worker dependency versions for
+reproducible installs.
+
+**Marked** the LinkedIn 12-post series complete — all posts sent 2026-04-13
+through 2026-05-22 (confirmed via `scripts/linkedin_post_state.json` and
+`scripts/linkedin_post.log`). The daily Task Scheduler job now runs as a no-op
+("All posts have been sent. Nothing to do.").
+
+### Framework validation: finances-2025 retrofit
+
+**Applied** `framework/RETROFIT_GUIDE.md` end-to-end to `finances-2025`
+(private repo, real personal/business tax recordkeeping) — Priority 1 (safety
++ smoke test, 2026-06-11) and Priority 3 plus relevant Priority 4 items
+(cost/quality + governance docs: ruff, `budget_guard.py`, `BUDGET_POLICY.md`,
+`GIT_POLICY.md`, `CONVENTIONS.md`, `DEVELOPMENT_PROTOCOL.md`,
+`BACKUP_POLICY.md`, `TASK_LEDGER.md`, 2026-06-12). This is the first full
+real-world application of the guide's priority ordering, and it caught a real
+gitignore/PII gap (source-document folders were untracked-but-not-ignored)
+during the Priority 1 pass. See `finances-2025/PROJECT_STATUS.md` and
+`DECISIONS.md` for the full record.
+
+---
+
+## 2026-05-05 — Session 3 — Security hardening
+
+**Added** ADR-010 (Public Endpoint Security Gate) and ADR-009 (LinkedIn
+session self-contained per project) to DECISIONS.md.
+
+**Added** Public Endpoint Security Gate to `framework/CLAUDE.md` — three
+mandatory questions before any public route goes live: can a bot hit it in a
+loop, does each hit trigger a paid API call, and what is the worst-case cost
+at 100,000 hits. Motivated by a real incident on a separate project: 148,277
+SMS messages ($1,235) over three days from a runaway webhook feedback loop,
+initially misdiagnosed as bot abuse.
+
+**Fixed** `worker/src/index.ts` — rate limiting is now fail-closed, returning
+503 if `RATE_LIMIT_KV` is not bound instead of silently skipping the check.
+
+**Updated** `framework/SECURITY.md` — threat model expanded to cover bot abuse
+and the notification feedback-loop failure mode; pre-deployment checklist
+updated accordingly.
+
+**Fixed** LinkedIn posting pipeline — `build-with-ai` and ARIA each now store
+their own `scripts/linkedin_session.json` and `scripts/save_linkedin_session.py`,
+removing a hidden cross-repo dependency on the job-search repo's session file.
+
+**Fixed** `scripts/capture_demo_screenshot.py` — capped screenshot height at
+900px for correct LinkedIn aspect ratio (later superseded by the Session 4
+1080x1350 resize).
+
+**Added** EC2 deployment vars to `.env.example`.
+
+---
+
 ## 2026-04-12
 
 ### Session 2 — Framework completion + src/core/ executable layer

@@ -13,6 +13,15 @@ Format per entry:
 
 ---
 
+## ADR-011 — RETROFIT_GUIDE.md validated end-to-end on finances-2025
+**Date**: 2026-06-12
+**Decision**: Treat the `finances-2025` retrofit (Priority 1 on 2026-06-11, Priority 3 + relevant Priority 4 on 2026-06-12) as the framework's first full end-to-end validation of `RETROFIT_GUIDE.md`'s priority ordering on a real, non-framework project.
+**Context**: `RETROFIT_GUIDE.md` (added Session 2) listed "job bot + ARIA" as known retrofit targets, but both are already part of this ecosystem and share conventions. `finances-2025` is a single-developer Python/SQLite project handling real personal/business PII, with no prior framework adoption beyond an initial Priority-1 pass — a colder, more realistic test of whether "safety first, cost/quality second" actually surfaces the right issues in the right order.
+**Rejected alternatives**: Treating the retrofit as routine project work with no framework-level record; waiting for a larger/more complex target project before calling the guide "validated."
+**Reason**: The Priority-1 pass on finances-2025 caught a genuine, previously-unnoticed gap — source-document folders (`personal/`, `great-self-llc/`, `rental-pueblo/*`) that real W-2s/1099s/bank exports get dropped into were not gitignored, risking real PII landing in a (private) GitHub repo on the next `git add`. That is exactly the class of issue Priority 1 ("Safety") is meant to catch before anything else. Recording this as an ADR closes the loop: the guide was written, then independently exercised against a real project, and it worked as designed.
+
+---
+
 ## ADR-010 — Public Endpoint Security Gate added to CLAUDE.md
 **Date**: 2026-05-05
 **Decision**: Three mandatory questions added to `CLAUDE.md` as a required pre-production gate for any public route that touches a paid external API: (1) Can a bot hit this in a loop? (2) Does each hit trigger a paid API call? (3) What is the worst-case cost at 100,000 hits?

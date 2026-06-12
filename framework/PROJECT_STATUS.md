@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
-Last updated: 2026-06-11
-Updated by: Claude Sonnet 4.6 (Session 4)
+Last updated: 2026-06-12
+Updated by: Claude Sonnet 4.6 (Session 4 close-out)
 
 ---
 
@@ -11,6 +11,18 @@ Framework is complete and in active use. LinkedIn 12-post series is complete
 (all posts sent 2026-04-13 through 2026-05-22, confirmed via
 `scripts/linkedin_post_state.json` and `scripts/linkedin_post.log`). Both this
 repo and ARIA have independent, self-contained LinkedIn posting pipelines.
+
+`RETROFIT_GUIDE.md` has now been validated end-to-end on a real,
+non-framework project: `finances-2025` (private repo, real personal/business
+tax recordkeeping). Priority 1 (Safety + smoke test) and Priority 3 (ruff,
+budget guard, governance docs), plus the relevant Priority 4 items, are
+complete there as of 2026-06-12 — see that repo's `PROJECT_STATUS.md` and
+`DECISIONS.md` for the full retrofit record. Priority 2 (continuity docs)
+was largely already in place from that project's own scaffold. This is the
+first full real-world application of the retrofit priority ordering and is
+evidence the guide's sequencing (safety first, cost/quality second) works in
+practice — including catching a real gitignore/PII gap during the Priority 1
+pass that predated this framework's involvement.
 
 **GitHub**: https://github.com/gr8drmrSLC/build-with-ai
 **Live demo**: https://gr8drmrslc.github.io/build-with-ai/
@@ -91,15 +103,19 @@ repo and ARIA have independent, self-contained LinkedIn posting pipelines.
 
 ## Open Questions
 
-- `framework/PROJECT_NARRATIVE.md` Entry 007 (Twilio incident case study) — draft now present in the working tree (uncommitted). Needs review and commit.
+- None outstanding. `framework/PROJECT_NARRATIVE.md` Entry 007 (feedback-loop
+  incident case study) was reviewed and committed in `04a4cbe`; the working
+  tree is clean and pushed.
 
 ---
 
 ## Next Task
 
 LinkedIn series complete (12/12) — decide what content comes next. Consider a
-second series on real-world project case studies (ARIA, investor bot).
+second series on real-world project case studies (ARIA, investor bot, or the
+finances-2025 retrofit itself).
 
-Before starting new content: triage uncommitted session-3 work in the working
-tree (Entry 007 draft, LinkedIn screenshot resize feature in
-`capture_demo_screenshot.py`, and stray debug/screenshot artifacts in `scripts/`).
+All prior session-3/4 work is committed and pushed: Entry 007 case study
+(`04a4cbe`), LinkedIn screenshot resize to 1080x1350 + recapture helper
+(`75908a4`), and `worker/package-lock.json` (`1403321`). No triage remains —
+working tree is clean.
