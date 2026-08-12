@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
-Last updated: 2026-06-12
-Updated by: Claude Sonnet 4.6 (Session 4 close-out)
+Last updated: 2026-08-12
+Updated by: Claude Sonnet 5 (Session 5 close-out)
 
 ---
 
@@ -101,21 +101,40 @@ pass that predated this framework's involvement.
 
 ---
 
+## Session 5 (2026-08-12) — Tracking Documents convention + Gemini CLI removal
+
+A downstream project (V2R Enterprise Knowledge), built on this framework,
+experienced real documentation drift and asked whether the underlying
+"one tracker, everything else points to it" lesson had been written back
+into this framework so future projects inherit it instead of re-deriving it.
+It had not. Added `CONVENTIONS.md`'s "Tracking Documents" rule (ADR-012).
+
+The same downstream project also found and fixed a stale Gemini CLI
+reference in its own adapted policy, after confirming directly that Google
+discontinued the free tier this framework's guidance depended on
+(`IneligibleTierError`). Checking this framework's own source found the
+same staleness in six files, including a live reference in the demo's
+orchestrator system prompt. Removed everywhere, folded into Sonnet
+(ADR-013). Demo edit verified with `npx tsc -b --noEmit`, 0 errors.
+
 ## Open Questions
 
-- None outstanding. `framework/PROJECT_NARRATIVE.md` Entry 007 (feedback-loop
-  incident case study) was reviewed and committed in `04a4cbe`; the working
-  tree is clean and pushed.
+- None outstanding from this session. Changes are made but not yet
+  committed; see below.
 
 ---
 
 ## Next Task
 
-LinkedIn series complete (12/12) — decide what content comes next. Consider a
-second series on real-world project case studies (ARIA, investor bot, or the
-finances-2025 retrofit itself).
+Confirm and commit Session 5's changes (`CONVENTIONS.md`, `CLAUDE.md`,
+`AI_DELEGATION_POLICY.md`, `BUDGET_POLICY.md`, `ORCHESTRATION_PROTOCOL.md`,
+`TASK_LEDGER.md`, `demo/src/components/OrchestratorPanel.tsx`,
+`DECISIONS.md`, `PROJECT_STATUS.md`, `CHANGELOG.md`).
+
+Before that: LinkedIn series complete (12/12) — decide what content comes
+next. Consider a second series on real-world project case studies (ARIA,
+investor bot, or the finances-2025 retrofit itself).
 
 All prior session-3/4 work is committed and pushed: Entry 007 case study
 (`04a4cbe`), LinkedIn screenshot resize to 1080x1350 + recapture helper
-(`75908a4`), and `worker/package-lock.json` (`1403321`). No triage remains —
-working tree is clean.
+(`75908a4`), and `worker/package-lock.json` (`1403321`).

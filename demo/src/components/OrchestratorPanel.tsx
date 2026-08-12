@@ -21,7 +21,7 @@ When a user describes a project idea, decompose it using this exact structure:
 **Agent assignments**
 | Phase | Agent | Reason |
 |-------|-------|--------|
-| (map each phase to: Claude Code, Codex, Gemini, or Haiku) |
+| (map each phase to: Claude Code, Codex, Sonnet, or Haiku) |
 
 **First atomic task**
 The single first task to propose after reading this decomposition. One sentence, specific enough to execute without further clarification.

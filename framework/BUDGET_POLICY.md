@@ -34,7 +34,6 @@ production workload: https://www.anthropic.com/pricing
 
 | Tool         | Cost    | Constraint                        | Best for                     |
 |--------------|---------|-----------------------------------|------------------------------|
-| Gemini CLI   | Free    | Rate limits, sequential only      | Large context reading        |
 | Codex CLI    | ~Free   | Scoped to code generation         | File-level code tasks        |
 | Local tools  | $0      | Must be installed                 | Anything they handle well    |
 
@@ -73,7 +72,7 @@ Before a significant API call, estimate token count:
 
 A typical framework .md file: 1,000–3,000 tokens
 A typical source file (100–300 lines): 2,000–5,000 tokens
-A full repo context: 50,000–200,000 tokens (use Gemini, not Claude)
+A full repo context: 50,000–200,000 tokens (Sonnet handles this; watch cost at this volume)
 A single user message + system prompt: 500–2,000 tokens
 ```
 
@@ -115,11 +114,10 @@ are accurate, not estimated.
 When choosing a model for a task, work through this in order:
 
 ```
-1. Can a free CLI tool do this?          → Use it
-2. Is the task atomic and well-defined?  → Haiku
-3. Does it require reasoning/judgment?   → Sonnet
-4. Is it a one-time architectural call?  → Opus (explicit approval)
-5. Does it require reading a large file? → Gemini CLI (free)
+1. Can a free CLI tool do this?                              → Use it
+2. Is the task atomic and well-defined?                      → Haiku
+3. Does it require reasoning/judgment, or reading a large file? → Sonnet
+4. Is it a one-time architectural call?                      → Opus (explicit approval)
 ```
 
 The question is not "what is the best model for this?" —

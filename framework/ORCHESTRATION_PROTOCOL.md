@@ -15,7 +15,7 @@ Orchestrator (you + Claude Code session)
     ├── Does NOT hold: executable work, large file contents, output
     └── Delegates to: subagents born with exactly what they need
 
-Subagent (fresh Claude session, Codex, Haiku call, Gemini read)
+Subagent (fresh Claude session, Codex, Haiku call)
     ├── Receives: one precise task + only the context it requires
     ├── Executes: the task
     └── Closes: carries nothing forward
@@ -151,7 +151,7 @@ Context is finite and compresses lossily. These rules preserve it.
 | Delegate                      | To                    |
 |-------------------------------|-----------------------|
 | File generation, code writing | Codex CLI             |
-| Large file reading, research  | Gemini CLI (free)     |
+| Large file reading, research  | Sonnet via API        |
 | Classification, extraction    | Haiku via API         |
 | Reasoning, planning           | Sonnet via API        |
 | Anything that produces output | Any subagent          |

@@ -33,7 +33,6 @@ Cost = (input_tokens / 1,000,000 × input_price)
 Haiku:  $0.25/M input  + $1.25/M output
 Sonnet: $3.00/M input  + $15.00/M output
 Opus:   $15.00/M input + $75.00/M output
-Gemini: $0 (free tier)
 Codex:  ~$0 (free tier)
 ```
 

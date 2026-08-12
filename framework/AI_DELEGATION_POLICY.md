@@ -34,7 +34,6 @@ the craft of this role.
 |------------------|-------------------------------------------------------|------------------------------------|
 | Claude Code      | Architecture, planning, ADRs, session orchestration   | Large code generation (burns context) |
 | Codex CLI        | Targeted code generation, well-scoped file edits      | Open-ended design decisions        |
-| Gemini CLI       | Large context reading, research, second opinions      | Tasks requiring action on files    |
 | Claude Haiku     | Atomic subagent tasks, classification, structured output | Ambiguous or multi-step problems |
 | Claude Sonnet    | Reasoning, planning, nuanced judgment                 | Tasks a cheaper model handles fine |
 | Claude Opus      | Highest-stakes architectural judgment                 | Routine tasks (cost not justified) |
@@ -56,14 +55,11 @@ Work through this decision tree in order. Stop at the first match.
 3. Is the task primarily code generation for a known, bounded problem?
    → Codex CLI. (Targeted, fast, doesn't consume orchestrator context.)
 
-4. Does the task require reading a large file, repo, or document?
-   → Gemini CLI. (Free tier, 1M context window, run sequentially.)
-     gemini -p "prompt" 2>/dev/null > output.file
+4. Does the task require reading a large file, repo, or document, or
+   multi-step reasoning and nuanced judgment?
+   → Sonnet. (Default for planning, analysis, and large-context reading.)
 
-5. Does the task require multi-step reasoning or nuanced judgment?
-   → Sonnet. (Default for planning and analysis.)
-
-6. Is this a founding architectural decision with long-term consequences?
+5. Is this a founding architectural decision with long-term consequences?
    → Claude Code / Opus. (Use sparingly — cost is justified only when
      the decision is hard to reverse.)
 ```
@@ -156,25 +152,6 @@ needs to complete the task correctly, and nothing it doesn't need.
 4. **The task ledger tracks cost**: log model used, approximate tokens,
    and outcome for every significant API call. Surprises on the bill
    are a process failure, not a model failure.
-
----
-
-## Gemini CLI — Specific Rules
-
-Gemini is free-tier and has a 1M context window. Use it for any
-task involving reading large files, summarizing repos, or research
-that would consume significant orchestrator context.
-
-```bash
-# Correct usage
-gemini -p "prompt" 2>/dev/null > output.file
-
-# Run sequentially — do NOT parallelize with file redirects
-# Do NOT use run_in_background=true with file output
-```
-
-The `2>/dev/null` suppresses spinner output that would corrupt
-the file. Run one Gemini call at a time.
 
 ---
 

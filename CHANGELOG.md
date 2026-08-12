@@ -5,6 +5,31 @@ Format: date, what changed, and why it mattered.
 
 ---
 
+## 2026-08-12 — Session 5 — Tracking Documents convention + Gemini CLI removal
+
+### Tracking Documents convention added
+
+**Added** `framework/CONVENTIONS.md`: a "Duplicate tracking lists" anti-pattern
+and a new "Tracking Documents" rule (one tracker, everything else points to
+it, enforced by an automated check, not just a written reminder). Prompted by
+real, repeated documentation drift found and fixed in a downstream project
+(V2R Enterprise Knowledge) built on this framework. See `DECISIONS.md`
+ADR-012.
+
+### Gemini CLI removed
+
+**Removed** every Gemini CLI reference across the framework: `CLAUDE.md`,
+`AI_DELEGATION_POLICY.md` (including its dedicated "Gemini CLI — Specific
+Rules" section), `BUDGET_POLICY.md`, `ORCHESTRATION_PROTOCOL.md`,
+`TASK_LEDGER.md`, and the live demo's orchestrator system prompt
+(`demo/src/components/OrchestratorPanel.tsx`), folding "large context
+reading" into Sonnet everywhere it appeared. Prompted by the same downstream
+project confirming Google discontinued the free tier this framework's
+guidance depended on. Verified the demo edit with `npx tsc -b --noEmit`,
+0 errors. See `DECISIONS.md` ADR-013.
+
+---
+
 ## 2026-06-11 — Session 4 — LinkedIn series completion + framework validation
 
 ### LinkedIn series complete (12/12)

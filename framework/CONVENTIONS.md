@@ -175,3 +175,19 @@ ORCHESTRATOR_MODEL=claude-sonnet-4-6
   and makes the codebase harder to navigate as it grows
 - **Config in code**: credentials or environment-specific values
   that must be changed manually when deploying to a new environment
+- **Duplicate tracking lists**: two documents independently
+  recording the same fact (a status, a version, a reading order)
+  instead of one tracker and everything else pointing to it. The
+  duplicate always drifts, quietly, and the drift is invisible
+  until something depends on it being current.
+
+---
+
+## Tracking Documents
+
+When a repository needs a single view of many items' status, exactly
+one file is that tracker. Every other document that would restate the
+same fact links to the tracker instead. A written rule alone does not
+hold this in practice — it needs a check that fails loudly when a
+tracker and its source disagree, run automatically, not run when
+someone remembers to.

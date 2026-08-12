@@ -13,6 +13,24 @@ Format per entry:
 
 ---
 
+## ADR-013 — Gemini CLI removed from the framework
+**Date**: 2026-08-12
+**Decision**: Removed Gemini CLI from every reference across the framework (`CLAUDE.md`'s Agent Delegation Policy and Model Selection Rule, `AI_DELEGATION_POLICY.md`'s Agent Capability Matrix, Model Selection Rule, and its dedicated "Gemini CLI — Specific Rules" section, `BUDGET_POLICY.md`'s tool cost table and decision tree, `ORCHESTRATION_PROTOCOL.md`'s subagent list and delegate table, `TASK_LEDGER.md`'s cost reference) and the live demo's orchestrator system prompt (`demo/src/components/OrchestratorPanel.tsx`), folding "large context reading" into Sonnet everywhere it appeared.
+**Context**: A downstream project (V2R Enterprise Knowledge) found and fixed this same staleness in its own adapted copy of `AI_DELEGATION_POLICY.md` after Google discontinued the free "Gemini Code Assist for individuals" tier this framework's guidance depended on, confirmed directly (`gemini -p "..."` → `IneligibleTierError`, a full client discontinuation, not a paid-tier gate). This framework, the actual source document, still referenced it everywhere, including a live, functional reference in the demo's system prompt that could assign a real user's project phase to a tool that no longer runs.
+**Rejected alternatives**: Fixing only the most visible reference (`CLAUDE.md`) and assuming the rest was clean (rejected: a full-repo search found five more files still referencing it after the first fix, not assumed clean without checking). Leaving the demo component unfixed since it is UI code, not documentation (rejected: `ARCHITECTURE.md` already states the demo must not drift from the framework's own methodology; leaving it stale here would violate that on the first real check).
+**Reason**: A documented-but-broken tool costs the same trust and time the Wall Protocol and senior-engineer heuristic exist to prevent. Verified the `.tsx` edit did not break anything: `npx tsc -b --noEmit` passes clean, 0 errors.
+
+---
+
+## ADR-012 — Tracking Documents convention added to CONVENTIONS.md
+**Date**: 2026-08-12
+**Decision**: Added a "Duplicate tracking lists" anti-pattern and a new "Tracking Documents" rule to `CONVENTIONS.md`: when a repository needs a single view of many items' status, exactly one file is that tracker, and every other document that would restate the same fact links to it instead. States that a written rule alone does not hold this in practice; it needs an automated check that fails when a tracker and its source disagree.
+**Context**: A downstream project built on this framework (V2R Enterprise Knowledge) experienced real, repeated drift: its own single-source-of-truth tracker fell out of sync with the documents it tracked three times in one session, and a separate bootstrap reading-order document went stale for over a week without anyone noticing, both because two documents independently recorded the same fact with no automated check that they still agreed. The fix that actually worked there was collapsing the duplicate into a single pointer plus a validator check and pre-commit hook, not a written reminder.
+**Rejected alternatives**: Leaving this as project-specific knowledge in V2R's own repository (rejected: this framework is the template other projects, including a planned accounting repository, will bootstrap from; each one re-deriving this lesson after its own first drift incident does not scale). Writing only the anti-pattern without the prescriptive rule (rejected: naming a failure mode is not the same as telling the next project what to do instead).
+**Reason**: This framework already names "single source of truth" as a value (`ARCHITECTURE.md`'s demo/methodology relationship, `CONVENTIONS.md`'s magic-strings anti-pattern) but had never stated it as a rule for documentation and tracking specifically, the exact gap that caused real drift downstream.
+
+---
+
 ## ADR-011 — RETROFIT_GUIDE.md validated end-to-end on finances-2025
 **Date**: 2026-06-12
 **Decision**: Treat the `finances-2025` retrofit (Priority 1 on 2026-06-11, Priority 3 + relevant Priority 4 on 2026-06-12) as the framework's first full end-to-end validation of `RETROFIT_GUIDE.md`'s priority ordering on a real, non-framework project.

@@ -72,7 +72,7 @@ present your findings — not just "I'm stuck."
 |----------------------------------|-------------------|
 | Architecture, planning, ADRs     | Claude Code (this)|
 | Targeted code generation         | Codex CLI         |
-| Large context reading / research | Gemini CLI (free) |
+| Large context reading / research | Claude Sonnet     |
 | Atomic tasks, classification     | Claude Haiku      |
 | Reasoning + planning             | Claude Sonnet     |
 
@@ -80,12 +80,6 @@ present your findings — not just "I'm stuck."
 Keep only decisions, architecture, project narrative, and task ledger
 in the orchestrator conversation. Everything executable gets delegated.
 Subagents are born with exactly what they need, complete the task, and close.
-
-### Gemini CLI usage
-```bash
-gemini -p "prompt" 2>/dev/null > output.file
-```
-Run sequentially. Do NOT use run_in_background=true with file redirects.
 
 ---
 
@@ -95,7 +89,7 @@ Run sequentially. Do NOT use run_in_background=true with file redirects.
 Tool/CLI available?        → Use it (no tokens spent)
 Atomic, well-scoped?       → Haiku
 Code generation?           → Codex
-Large context reading?     → Gemini (free tier)
+Large context reading?     → Sonnet
 Reasoning + planning?      → Sonnet
 Architecture judgment?     → Claude Code (sparingly)
 ```
